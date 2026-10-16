@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class OtpCode extends Model
 {
     /**
+     * Tabel otp_codes hanya memiliki created_at, tidak ada updated_at.
+     */
+    const UPDATED_AT = null;
+
+    /**
      * Kolom yang bisa diisi secara mass assignment.
      *
      * @var array<string>

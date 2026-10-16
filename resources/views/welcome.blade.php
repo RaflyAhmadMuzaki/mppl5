@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
     content="SIPELIK - Layanan Aspirasi dan Pengaduan Online Lingkungan Kota. Sampaikan laporan kerusakan lingkungan langsung kepada dinas berwenang.">
-  <title>SIMPLE - Layanan Pengaduan Online Lingkungan Kota</title>
+  <title>SIMPEL - Layanan Pengaduan Online Lingkungan Kota</title>
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
             </svg>
           </div>
           <div class="brand-text">
-            <span class="brand-main">SIMPLE</span>
+            <span class="brand-main">SIMPEL</span>
             <span class="brand-sub">Pengaduan Lingkungan Kota</span>
           </div>
         </a>
@@ -51,8 +51,8 @@
         <button type="button" class="nav-link" data-tab="tabPeta">PETA SEBARAN</button>
         <button type="button" class="nav-link" data-tab="tabLacak">LACAK TIKET</button>
         <button type="button" class="nav-link" data-tab="tabStatistik">STATISTIK</button>
-        <button type="button" class="nav-link" data-tab="tabTentang">TENTANG SIMPLE</button>
-        <button type="button" class="nav-link hidden" id="navLinkAdmin" data-tab="tabAdmin">PANEL PETUGAS</button>
+        <button type="button" class="nav-link" data-tab="tabTentang">TENTANG SIMPEL</button>
+        <a href="/admin" class="nav-link hidden" id="navLinkAdmin" style="color:#c1121f;font-weight:800;">PORTAL PETUGAS &rarr;</a>
       </nav>
 
       <div class="nav-actions">
@@ -155,17 +155,18 @@
 
               <div class="form-field-row">
                 <div class="form-field">
-                  <label for="selectWilayah" class="field-label">Wilayah / Kecamatan <span class="req">*</span></label>
-                  <select id="selectWilayah" class="field-select" required>
-                    <option value="" disabled selected>Pilih Wilayah Kejadian</option>
-                    <option value="Sukajadi">Kecamatan Sukajadi</option>
-                    <option value="Menteng">Kecamatan Menteng</option>
-                    <option value="Wonokromo">Kecamatan Wonokromo</option>
-                    <option value="Cibiru">Kecamatan Cibiru</option>
-                    <option value="Gambir">Kecamatan Gambir</option>
-                    <option value="Gubeng">Kecamatan Gubeng</option>
-                  </select>
-                </div>
+                <label for="selectWilayah" class="field-label">Wilayah / Kecamatan Kejadian <span class="req">*</span></label>
+                <input type="text" id="selectWilayah" class="field-input" list="daftarKecamatan"
+                  placeholder="Ketik wilayah / kecamatan lokasi kejadian (bebas di mana saja)..." required>
+                <datalist id="daftarKecamatan">
+                  <option value="Sukajadi">
+                  <option value="Menteng">
+                  <option value="Wonokromo">
+                  <option value="Cibiru">
+                  <option value="Gambir">
+                  <option value="Gubeng">
+                </datalist>
+              </div>
                 <div class="form-field">
                   <label for="selectInstansi" class="field-label">Instansi Tujuan <span class="req">*</span></label>
                   <select id="selectInstansi" class="field-select" required>
@@ -509,232 +510,134 @@
     </div>
 
     <!-- ============================================================== -->
-    <!-- TAB 5: TENTANG SIMPLE -->
+    <!-- TAB 5: TENTANG SIMPEL -->
     <!-- ============================================================== -->
     <div id="tabTentang" class="tab-page hidden">
       <section class="page-container narrow-container">
         <div class="tentang-hero-card">
-          <h2 class="tentang-title">Apa itu SIMPLE?</h2>
+          <div class="tentang-header-badge">
+            <span class="gov-text-badge">PORTAL RESMI PELAPORAN LINGKUNGAN HIDUP KOTA</span>
+          </div>
+          <h2 class="tentang-title">Tentang SIMPEL</h2>
           <p class="tentang-lead">
-            <strong>SIMPLE (Sistem Informasi Pelaporan Lingkungan Kota)</strong> adalah sarana aspirasi dan pengaduan
-            online masyarakat untuk percepatan penanganan masalah fasilitas umum dan pencemaran lingkungan berbasis web.
+            <strong>SIMPEL (Sistem Informasi Pelaporan Lingkungan Kota)</strong> adalah platform layanan publik digital
+            terpadu yang dirancang untuk menjembatani partisipasi aktif masyarakat dengan instansi kedinasan pemerintah kota
+            dalam menjaga, memulihkan, dan mengawasi kelestarian lingkungan hidup perkotaan.
           </p>
 
           <div class="tentang-divider"></div>
 
-          <h3 class="tentang-subtitle">Latar Belakang & Permasalahan</h3>
-          <ul class="tentang-list">
-            <li>Fasilitas lingkungan yang baik meningkatkan kenyamanan dan produktivitas masyarakat kota.</li>
-            <li>Kerusakan fasilitas umum dan pencemaran lingkungan yang dibiarkan dapat mengganggu aktivitas publik dan
-              kesehatan warga.</li>
-            <li>Proses pelaporan konvensional masih lambat, birokratis, dan tidak transparan.</li>
-            <li>Dibutuhkan sarana pelaporan digital yang mudah diakses warga, terintegrasi, dan terpusat.</li>
-          </ul>
+          <!-- Bagian 1: Latar Belakang & Visi Misi -->
+          <h3 class="tentang-subtitle">Latar Belakang & Urgensi Sistem</h3>
+          <p class="tentang-body-text">
+            Pertumbuhan kota yang pesat menghadirkan berbagai tantangan lingkungan hidup yang mendesak, mulai dari penumpukan sampah liar,
+            pencemaran limbah cair industri ke aliran sungai, polusi udara akibat pembakaran terbuka, hingga berkurangnya ruang terbuka hijau (RTH).
+            Sistem pengaduan konvensional seringkali lambat, sulit dilacak, dan memakan birokrasi panjang.
+            <strong>SIMPEL hadir sebagai solusi digital satu pintu (one-stop digital channel)</strong> yang transparan, akuntabel, dan dapat diakses oleh seluruh warga kota kapan saja dan di mana saja.
+          </p>
 
-          <h3 class="tentang-subtitle">Keunggulan & Fitur Utama</h3>
+          <div class="tentang-vision-mission-grid">
+            <div class="vm-card">
+              <div class="vm-icon">🎯</div>
+              <h4>Visi SIMPEL</h4>
+              <p>Mewujudkan tata kelola lingkungan perkotaan yang bersih, sehat, berkelanjutan, dan tanggap krisis berbasis partisipasi inklusif seluruh lapisan masyarakat.</p>
+            </div>
+            <div class="vm-card">
+              <div class="vm-icon">⚡</div>
+              <h4>Misi SIMPEL</h4>
+              <p>Menyediakan sarana aduan yang cepat dan akurat, mempercepat respon tim lapangan lintas instansi, serta menyajikan data analitik lingkungan yang transparan untuk kebijakan publik.</p>
+            </div>
+          </div>
+
+          <!-- Bagian 2: 5 Pilar Keunggulan SIMPEL -->
+          <h3 class="tentang-subtitle">5 Pilar Layanan Unggulan SIMPEL</h3>
           <div class="features-pill-grid">
             <div class="feat-card">
-              <h4>01. Komunikasi Dua Arah</h4>
-              <p>Portal web terintegrasi menghubungkan warga langsung dengan dinas penanggung jawab.</p>
+              <h4>01. Login Aman Passwordless (OTP Email)</h4>
+              <p>Warga tidak perlu mengingat kata sandi rumit. Cukup masukkan email aktif, kode OTP 6 digit dikirimkan langsung untuk otentikasi instan dan pembuatan akun otomatis.</p>
             </div>
             <div class="feat-card">
-              <h4>02. Pelaporan Cepat & Geo-Tagging</h4>
-              <p>Unggah bukti foto dan pin lokasi presisi menggunakan peta interaktif Leaflet.</p>
+              <h4>02. Geotagging & Pemetaan Spasial Presisi</h4>
+              <p>Didukung peta interaktif Leaflet GIS. Pelapor dapat menyematkan koordinat lokasi kejadian secara akurat sehingga regu penanganan di lapangan dapat langsung menuju titik insiden.</p>
             </div>
             <div class="feat-card">
-              <h4>03. Verifikasi Digital</h4>
-              <p>Mempercepat validasi dan penugasan regu lapangan tanpa surat menyurat fisik.</p>
+              <h4>03. Transparansi & Pelacakan Tiket Terbuka</h4>
+              <p>Setiap aduan diberikan nomor registrasi unik (format LAP-XXXX-XXXX). Warga dapat memantau perkembangan penanganan, membaca catatan tindak lanjut petugas, dan memvalidasi hasil kerja dinas.</p>
             </div>
             <div class="feat-card">
-              <h4>04. Transparansi Real-Time</h4>
-              <p>Pelacakan status tiket aduan dengan catatan resmi petugas yang dapat dipantau setiap saat.</p>
+              <h4>04. Perlindungan Privasi (Anonim & Rahasia)</h4>
+              <p>Warga memiliki kebebasan untuk menyamarkan identitas pelapor (opsi Anonim) atau membatasi publikasi isi laporan (opsi Rahasia) demi keselamatan pelapor saat mengadukan pelanggaran serius.</p>
+            </div>
+            <div class="feat-card">
+              <h4>05. Manajemen Meja Kerja & Retensi Otomatis</h4>
+              <p>Meja kerja petugas dilengkapi validasi bukti foto, pembaruan status pengerjaan, ekspor rekapitulasi resmi format PDF, serta pembersihan otomatis aduan yang telah tuntas dalam 24 jam.</p>
             </div>
           </div>
 
-          <h3 class="tentang-subtitle">Struktur Tim Pengembang MPPL - Agile Scrum</h3>
-          <div class="team-table-wrap">
-            <table class="team-table">
-              <thead>
-                <tr>
-                  <th>Nama Anggota Tim</th>
-                  <th>Peran dalam Proyek MPPL</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Muhammad Ibnu Hanif</td>
-                  <td>Project Manager & Scrum Master</td>
-                </tr>
-                <tr>
-                  <td>Nabilah Safawani</td>
-                  <td>System Analyst</td>
-                </tr>
-                <tr>
-                  <td>Qoisy Ahmad Furqon</td>
-                  <td>UI/UX Designer</td>
-                </tr>
-                <tr>
-                  <td>Rafly Ahmad Muzaki</td>
-                  <td>Backend Developer</td>
-                </tr>
-                <tr>
-                  <td>Raihan Fadhila</td>
-                  <td>Frontend Developer 1</td>
-                </tr>
-                <tr>
-                  <td>Raihan Khoirul Aziz</td>
-                  <td>Frontend Developer 2</td>
-                </tr>
-                <tr>
-                  <td>Raisya Fathul Jabbar</td>
-                  <td>QA Tester & Technical Writer</td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Bagian 3: Ruang Lingkup Masalah Lingkungan -->
+          <h3 class="tentang-subtitle">Kategori Masalah Lingkungan yang Ditangani</h3>
+          <div class="scope-grid">
+            <div class="scope-item">
+              <span class="scope-badge">Sampah & Kebersihan</span>
+              <h5>Tumpukan Sampah Liar & TPS Ilegal</h5>
+              <p>Aduan penumpukan limbah padat di bahu jalan, lahan kosong, bantaran rel, atau area pemukiman yang tidak terangkut.</p>
+            </div>
+            <div class="scope-item">
+              <span class="scope-badge">Kualitas Air</span>
+              <h5>Pencemaran Sungai & Saluran Air</h5>
+              <p>Pembuangan limbah cair keruh atau berbau, endapan zat berbahaya, serta penyumbatan drainase utama perkotaan.</p>
+            </div>
+            <div class="scope-item">
+              <span class="scope-badge">Kualitas Udara</span>
+              <h5>Polusi Udara & Pembakaran Terbuka</h5>
+              <p>Aktivitas pembakaran sampah ilegal, asap pekat bengkel/industri tanpa cerobong filtrasi, dan bau menyengat berkepanjangan.</p>
+            </div>
+            <div class="scope-item">
+              <span class="scope-badge">Tata Ruang & Hijau</span>
+              <h5>Kerusakan Taman & Pohon Rawan Tumbang</h5>
+              <p>Fasilitas bangku/alat bermain taman publik yang rusak, penebangan pohon liar, atau dahan lapuk yang membahayakan pengguna jalan.</p>
+            </div>
           </div>
 
-          <h3 class="tentang-subtitle">Rencana Sprint Agile Framework</h3>
-          <div class="sprint-timeline">
-            <div class="sprint-box">
-              <span class="sprint-num">Sprint 1</span>
-              <h4>Analisis & Desain Awal</h4>
-              <p>Identifikasi kebutuhan sistem, ERD & diagram alur, serta wireframe UI Figma.</p>
+          <!-- Bagian 4: Alur Kerja & Standar Waktu Penanganan (SLA) -->
+          <h3 class="tentang-subtitle">Alur Penanganan Laporan Warga</h3>
+          <div class="workflow-steps-horizontal">
+            <div class="wf-step">
+              <div class="wf-circle">1</div>
+              <h4>Warga Mengirim Aduan</h4>
+              <p>Mengisi form aduan, menyertakan bukti foto, memilih kecamatan, dan menyematkan pin peta digital.</p>
             </div>
-            <div class="sprint-box">
-              <span class="sprint-num">Sprint 2</span>
-              <h4>Fitur Portal Masyarakat</h4>
-              <p>Autentikasi, formulir pelaporan terpadu, integrasi upload foto, dan peta Leaflet.</p>
+            <div class="wf-step">
+              <div class="wf-circle">2</div>
+              <h4>Verifikasi Petugas</h4>
+              <p>Petugas memvalidasi keaslian laporan dan kelayakan bukti dalam waktu maksimal 1x24 jam.</p>
             </div>
-            <div class="sprint-box">
-              <span class="sprint-num">Sprint 3</span>
-              <h4>Fitur Portal Admin & Testing</h4>
-              <p>Meja verifikasi laporan, dashboard analitik, pengujian QA, dan dokumentasi sistem.</p>
+            <div class="wf-step">
+              <div class="wf-circle">3</div>
+              <h4>Aksi Regu Lapangan</h4>
+              <p>Dinas Lingkungan Hidup atau Satpol PP menerjunkan tim teknis untuk menindaklanjuti lokasi.</p>
+            </div>
+            <div class="wf-step">
+              <div class="wf-circle">4</div>
+              <h4>Selesai & Retensi Data</h4>
+              <p>Laporan dinyatakan selesai dengan catatan resmi petugas. Data laporan selesai otomatis diarsipkan setelah 24 jam.</p>
             </div>
           </div>
+
+          <!-- Bagian 5: Komitmen Pemerintah Kota -->
+          <div class="tentang-cta-box">
+            <h4>Bersama Menjaga Lingkungan Kota Kita</h4>
+            <p>
+              Setiap laporan yang Anda sampaikan merupakan langkah nyata dalam menjaga kualitas hidup dan masa depan kota yang berkelanjutan.
+              Gunakan layanan SIMPEL secara bijak, bertanggung jawab, dan sertakan informasi yang objektif demi kelancaran proses validasi petugas.
+            </p>
+          </div>
+
         </div>
       </section>
     </div>
 
-    <!-- ============================================================== -->
-    <!-- TAB 6: PANEL PETUGAS KOTA (HALAMAN KHUSUS PETUGAS)             -->
-    <!-- ============================================================== -->
-    <div id="tabAdmin" class="tab-page hidden">
-      <section class="page-container">
-        <div class="admin-top-card">
-          <div>
-            <span class="admin-badge">PORTAL RESMI PETUGAS KOTA</span>
-            <h2 class="admin-title">Meja Kerja Validasi & Tindak Lanjut Aduan</h2>
-            <p class="admin-sub">Periksa keabsahan bukti foto dan lokasi laporan warga, perbarui status pengerjaan, dan
-              berikan catatan resmi petugas.</p>
-          </div>
-          <div class="admin-quick-actions">
-            <button type="button" class="btn-outline-red btn-sm" id="btnExportAdminCSV">Unduh Rekap CSV</button>
-            <button type="button" class="btn-lapor-submit btn-sm" id="btnRefreshAdmin">Segarkan Data</button>
-          </div>
-        </div>
-
-        <!-- Metric KPI Cards Khusus Petugas -->
-        <div class="petugas-kpi-grid">
-          <div class="petugas-kpi-card kpi-total">
-            <div class="petugas-kpi-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-              </svg>
-            </div>
-            <div class="petugas-kpi-data">
-              <span class="petugas-kpi-value" id="petugasKpiTotal">0</span>
-              <span class="petugas-kpi-label">Total Aduan Masuk</span>
-            </div>
-          </div>
-          <div class="petugas-kpi-card kpi-pending">
-            <div class="petugas-kpi-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-            </div>
-            <div class="petugas-kpi-data">
-              <span class="petugas-kpi-value" id="petugasKpiPending">0</span>
-              <span class="petugas-kpi-label">Menunggu Verifikasi</span>
-            </div>
-          </div>
-          <div class="petugas-kpi-card kpi-process">
-            <div class="petugas-kpi-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 14 14"></polyline>
-              </svg>
-            </div>
-            <div class="petugas-kpi-data">
-              <span class="petugas-kpi-value" id="petugasKpiProcess">0</span>
-              <span class="petugas-kpi-label">Sedang Diproses</span>
-            </div>
-          </div>
-          <div class="petugas-kpi-card kpi-done">
-            <div class="petugas-kpi-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-            </div>
-            <div class="petugas-kpi-data">
-              <span class="petugas-kpi-value" id="petugasKpiDone">0</span>
-              <span class="petugas-kpi-label">Selesai Ditangani</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="admin-table-wrapper">
-          <div class="table-header-controls">
-            <div class="tab-filter-pills">
-              <button type="button" class="tab-pill active" data-status="ALL">Semua Aduan</button>
-              <button type="button" class="tab-pill" data-status="Menunggu Verifikasi">Perlu Verifikasi</button>
-              <button type="button" class="tab-pill" data-status="Diproses">Sedang Diproses</button>
-              <button type="button" class="tab-pill" data-status="Selesai">Selesai</button>
-            </div>
-            <input type="search" id="adminSearchInput" class="field-input input-sm"
-              placeholder="Cari No. Tiket, Judul, atau Wilayah..." aria-label="Cari aduan pada meja petugas">
-          </div>
-
-          <div class="table-responsive">
-            <table class="lapor-data-table">
-              <thead>
-                <tr>
-                  <th>No. Tiket</th>
-                  <th>Waktu</th>
-                  <th>Kategori & Lokasi</th>
-                  <th>Judul Aduan</th>
-                  <th>Lampiran</th>
-                  <th>Status</th>
-                  <th>Aksi Petugas</th>
-                </tr>
-              </thead>
-              <tbody id="adminReportsTableBody">
-                <!-- Diisi secara dinamis -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </div>
-
-  </main>
-
-  <!-- MODAL TINDAK LANJUT PETUGAS -->
-  <div id="modalActionPetugas" class="lapor-modal-backdrop hidden" role="dialog" aria-modal="true"
-    aria-labelledby="modalActionTitle">
-    <div class="lapor-modal-dialog">
-      <div class="modal-top">
-        <h3 id="modalActionTitle" class="modal-title-text">Tindak Lanjut Laporan Petugas</h3>
-        <button type="button" class="modal-close-icon" id="btnCloseModalAction"
-          aria-label="Tutup dialog">&times;</button>
-      </div>
-      <div class="modal-content-area" id="modalActionBody">
-        <!-- Konten diisi dinamis -->
-      </div>
-    </div>
-  </div>
+    </main>
 
   <!-- MODAL SUKSES PENGIRIMAN LAPORAN -->
   <div id="modalSuccessReport" class="lapor-modal-backdrop hidden" role="dialog" aria-modal="true"
@@ -786,8 +689,8 @@
               </svg>
             </div>
             <div>
-              <h3 id="modalLoginTitle" class="flip-card-title">Masuk sebagai Masyarakat</h3>
-              <p class="flip-card-subtitle">Masuk tanpa kata sandi — gunakan kode OTP email</p>
+              <h3 id="modalLoginTitle" class="flip-card-title">Masuk / Daftar Akun</h3>
+              <p class="flip-card-subtitle">Masuk atau daftar otomatis via kode OTP email (tanpa kata sandi)</p>
             </div>
             <button type="button" class="modal-close-icon flip-close-btn" id="btnCloseLogin"
               aria-label="Tutup dialog">&times;</button>
@@ -808,6 +711,9 @@
                   <span id="btnSendOtpSpinner" class="btn-spinner hidden" aria-hidden="true"></span>
                 </button>
               </div>
+              <p class="auth-helper-note" style="margin-top:12px;font-size:12px;color:#64748b;text-align:center;">
+                ✨ Akun baru otomatis terdaftar setelah verifikasi kode OTP berhasil.
+              </p>
             </form>
           </div>
 
@@ -909,69 +815,6 @@
     </div><!-- /.login-flip-scene -->
   </div><!-- /#modalLogin -->
 
-  <!-- MODAL REGISTER (DAFTAR) -->
-  <div id="modalRegister" class="lapor-modal-backdrop hidden" role="dialog" aria-modal="true"
-    aria-labelledby="modalRegisterTitle">
-    <div class="lapor-modal-dialog modal-dialog-md">
-      <div class="modal-top">
-        <h3 id="modalRegisterTitle" class="modal-title-text">Pendaftaran Akun SIPELIK</h3>
-        <button type="button" class="modal-close-icon" id="btnCloseRegister" aria-label="Tutup dialog">&times;</button>
-      </div>
-      <div class="modal-content-area">
-        <form id="formRegister" class="lapor-form" novalidate>
-          <!-- Akun pendaftaran hanya untuk Warga -->
-          <input type="hidden" name="regRole" value="citizen">
-
-          <div class="form-field-row">
-            <div class="form-field">
-              <label for="regName" class="field-label">Nama Lengkap <span class="req">*</span></label>
-              <input type="text" id="regName" class="field-input" placeholder="Nama Lengkap Sesuai KTP" required>
-            </div>
-            <div class="form-field">
-              <label for="regEmail" class="field-label">Alamat Email <span class="req">*</span></label>
-              <input type="email" id="regEmail" class="field-input" placeholder="nama@email.com" required>
-            </div>
-          </div>
-
-          <div class="form-field-row">
-            <div class="form-field">
-              <label for="regPhone" class="field-label">Nomor WhatsApp / HP <span class="req">*</span></label>
-              <input type="tel" id="regPhone" class="field-input" placeholder="08xxxxxxxxxx" required>
-            </div>
-            <div class="form-field">
-              <label for="regIdentifier" class="field-label" id="labelRegIdentifier">Nomor Induk Kependudukan (NIK)
-                <span class="req">*</span></label>
-              <input type="text" id="regIdentifier" class="field-input" placeholder="16 digit NIK" required>
-            </div>
-          </div>
-
-          <div class="form-field-row">
-            <div class="form-field">
-              <label for="regPassword" class="field-label">Kata Sandi <span class="req">*</span></label>
-              <input type="password" id="regPassword" class="field-input" placeholder="Minimal 6 karakter" required>
-            </div>
-            <div class="form-field">
-              <label for="regConfirmPassword" class="field-label">Konfirmasi Kata Sandi <span
-                  class="req">*</span></label>
-              <input type="password" id="regConfirmPassword" class="field-input" placeholder="Ulangi kata sandi"
-                required>
-            </div>
-          </div>
-
-          <div id="registerErrorMsg" class="alert-box error hidden" role="alert"></div>
-
-          <div class="form-submit-row">
-            <button type="submit" class="btn-lapor-submit full-width" id="btnSubmitRegister">Daftar Akun Baru</button>
-          </div>
-        </form>
-        <p class="auth-switch-text">
-          Sudah memiliki akun? <button type="button" class="auth-switch-btn" id="btnSwitchToLogin">Masuk ke Akun
-            Anda</button>
-        </p>
-      </div>
-    </div>
-  </div>
-
   <!-- MODAL PANDUAN PENGADUAN LAPOR! -->
   <div id="modalPanduan" class="lapor-modal-backdrop hidden" role="dialog" aria-modal="true"
     aria-labelledby="modalPanduanTitle">
@@ -1018,7 +861,7 @@
         <button type="button" class="footer-link-btn" onclick="window.openPanduanModal()">PANDUAN LAPORAN</button>
       </nav>
       <div class="footer-copy">
-        <p>Hak Cipta &copy; 2026 Sistem Informasi Pelaporan Lingkungan Kota (SIMPLEgit) - Manajemen Proyek Perangkat
+        <p>Hak Cipta &copy; 2026 Sistem Informasi Pelaporan Lingkungan Kota (SIMPEL) - Manajemen Proyek Perangkat
           Lunak
           (MPPL).</p>
       </div>
@@ -1028,6 +871,13 @@
   <!-- Leaflet Library -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- jsPDF & AutoTable for PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <!-- Main Script -->
   <script src="app.js"></script>

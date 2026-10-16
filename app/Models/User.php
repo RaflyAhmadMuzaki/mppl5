@@ -18,11 +18,27 @@ class User extends Authenticatable
      * @var array<string>
      */
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'password',
         'role',
     ];
+
+    /**
+     * Accessor agar $user->name merujuk ke kolom nama.
+     */
+    public function getNameAttribute(): ?string
+    {
+        return $this->nama;
+    }
+
+    /**
+     * Mutator agar $user->name = '...' mengisi kolom nama.
+     */
+    public function setNameAttribute(?string $value): void
+    {
+        $this->attributes['nama'] = $value;
+    }
 
     /**
      * Kolom yang disembunyikan dari serialisasi.

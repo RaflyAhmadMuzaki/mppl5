@@ -1,8 +1,18 @@
 // ==========================================================================
-// SIMPEL AUTH HELPER
-// Fungsi autentikasi menggunakan Fetch API native ke endpoint Laravel.
-// Menggantikan semua ketergantungan pada SDK EmailJS.
+// SIMPEL AUTH HELPER & EMAILJS INTEGRATION
+// Kombinasi backend Laravel (OTP generator & database) + EmailJS untuk kirim email real.
 // ==========================================================================
+
+const EMAILJS_CONFIG = {
+  publicKey: '6h5g2PK9bo1oKvatZ',
+  serviceId: 'service_vo0exbc',
+  templateId: 'template_5pg81ct',
+};
+
+// Inisialisasi EmailJS SDK jika library tersedia
+if (typeof emailjs !== 'undefined') {
+  emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+}
 
 /**
  * Base URL untuk semua endpoint Laravel API.
@@ -27,16 +37,11 @@ const SIMPEL_JSON_HEADERS = {
 // --------------------------------------------------------------------------
 /**
  * Meminta kode OTP dikirim ke alamat email yang diberikan.
- * Cocok untuk tombol "Kirim OTP" di form login masyarakat.
+ * 1. Minta kode OTP acak dari backend Laravel (/api/send-otp) -> disimpan di database
+ * 2. Kirim kode OTP tersebut langsung ke Gmail via EmailJS SDK
  *
  * @param  {string} email  - Alamat email tujuan pengiriman OTP
  * @returns {Promise<{success: boolean, message: string}>}
- *
- * @example
- *   const result = await SimpelAuth.requestOtp('user@gmail.com');
- *   if (result.success) {
- *     alert(result.message);
- *   }
  */
 async function requestOtp(email) {
   try {
@@ -49,14 +54,39 @@ async function requestOtp(email) {
     const data = await response.json();
 
     if (!response.ok) {
-      // Tangani validasi Laravel (422) atau error server lainnya
       const errorMsg = data.message
         || (data.errors && Object.values(data.errors).flat().join(' '))
         || 'Gagal mengirim OTP. Coba lagi.';
       return { success: false, message: errorMsg };
     }
 
-    return data; // { success: true, message: '...' }
+    // Kirim email via EmailJS browser SDK ke inbox pengguna
+    if (typeof emailjs !== 'undefined' && data.otp_code) {
+      try {
+        const templateParams = {
+          to_email: email,
+          email: email,
+          to_name: email.split('@')[0],
+          name: email.split('@')[0],
+          otp_code: data.otp_code,
+          otp: data.otp_code,
+          code: data.otp_code,
+          passcode: data.otp_code,
+          message: `Kode verifikasi OTP Anda untuk masuk ke sistem SIMPEL adalah: ${data.otp_code}. Kode ini berlaku selama 5 menit.`,
+        };
+
+        await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams, EMAILJS_CONFIG.publicKey);
+        console.log('[EmailJS] Berhasil mengirim email OTP ke:', email);
+      } catch (emailErr) {
+        console.warn('[EmailJS] Pengiriman email gagal via SDK:', emailErr);
+      }
+    }
+
+    return {
+      success: true,
+      message: `Kode OTP telah dikirim ke email ${email}. Silakan periksa kotak masuk atau spam.`,
+      otp_code: data.otp_code,
+    };
 
   } catch (networkError) {
     console.error('[SimpelAuth] requestOtp network error:', networkError);
@@ -428,152 +458,135 @@ function initTabsNavigation() {
   });
 }
 
-// Sistem Autentikasi Pengguna (Akun Warga & Akun Petugas Kota)
+// Sistem Autentikasi Pengguna — Card Flip OTP (Masyarakat) + Password (Admin)
 function initAuthSystem() {
-  const guestGroup = document.getElementById("guestAuthGroup");
-  const userGroup = document.getElementById("userAuthGroup");
-  const btnOpenLogin = document.getElementById("btnOpenLogin");
+  const btnOpenLogin    = document.getElementById("btnOpenLogin");
   const btnOpenRegister = document.getElementById("btnOpenRegister");
-  const btnLogout = document.getElementById("btnLogout");
-  const navLinkAdmin = document.getElementById("navLinkAdmin");
+  const btnLogout       = document.getElementById("btnLogout");
+  const modalLogin      = document.getElementById("modalLogin");
 
-  const modalLogin = document.getElementById("modalLogin");
-  const modalRegister = document.getElementById("modalRegister");
-  const btnCloseLogin = document.getElementById("btnCloseLogin");
-  const btnCloseRegister = document.getElementById("btnCloseRegister");
-
-  const btnSwitchToReg = document.getElementById("btnSwitchToRegister");
-  const btnSwitchToLog = document.getElementById("btnSwitchToLogin");
-
-  const btnLoginAsPetugas = document.getElementById("btnLoginAsPetugas");
-
-  const formLogin = document.getElementById("formLogin");
-  const formRegister = document.getElementById("formRegister");
-  const loginErrorMsg = document.getElementById("loginErrorMsg");
-  const registerErrorMsg = document.getElementById("registerErrorMsg");
-
-  // Buka Modal Login & Register
-  btnOpenLogin?.addEventListener("click", () => {
-    loginErrorMsg?.classList.add("hidden");
+  // Buka modal login (Masyarakat OTP) saat klik "Masuk" atau "Daftar" (Opsi B)
+  const openAuthModal = () => {
+    resetLoginModal();
     modalLogin?.classList.remove("hidden");
+  };
+
+  btnOpenLogin?.addEventListener("click", openAuthModal);
+  btnOpenRegister?.addEventListener("click", openAuthModal);
+
+  // Tombol tutup sisi depan & belakang
+  document.getElementById("btnCloseLogin")?.addEventListener("click", closeLoginModal);
+  document.getElementById("btnCloseLoginBack")?.addEventListener("click", closeLoginModal);
+
+  // Klik backdrop untuk menutup
+  modalLogin?.addEventListener("click", (e) => { if (e.target === modalLogin) closeLoginModal(); });
+
+  // ── FLIP: Masyarakat <-> Admin ──────────────────────────────────────────
+  const flipCard = document.getElementById("loginFlipCard");
+  document.getElementById("btnFlipToAdmin")?.addEventListener("click", () => {
+    flipCard?.classList.add("is-flipped");
+    document.getElementById("adminLoginMsg")?.classList.add("hidden");
+  });
+  document.getElementById("btnFlipToMasyarakat")?.addEventListener("click", () => {
+    flipCard?.classList.remove("is-flipped");
   });
 
-  btnOpenRegister?.addEventListener("click", () => {
-    registerErrorMsg?.classList.add("hidden");
-    modalRegister?.classList.remove("hidden");
-  });
-
-  btnCloseLogin?.addEventListener("click", () => modalLogin?.classList.add("hidden"));
-  btnCloseRegister?.addEventListener("click", () => modalRegister?.classList.add("hidden"));
-
-  btnSwitchToReg?.addEventListener("click", () => {
-    modalLogin?.classList.add("hidden");
-    modalRegister?.classList.remove("hidden");
-  });
-
-  btnSwitchToLog?.addEventListener("click", () => {
-    modalRegister?.classList.add("hidden");
-    modalLogin?.classList.remove("hidden");
-  });
-
-  // Tombol Login sebagai Petugas
-  btnLoginAsPetugas?.addEventListener("click", () => {
-    document.getElementById("loginEmail").value = "petugas@sipelik.go.id";
-    document.getElementById("loginPassword").value = "petugas123";
-    formLogin.dispatchEvent(new Event("submit"));
-  });
-
-  // Submit Login
-  formLogin?.addEventListener("submit", (e) => {
+  // ── MASYARAKAT — Langkah 1: Kirim OTP ───────────────────────────────────
+  document.getElementById("formSendOtp")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    loginErrorMsg.classList.add("hidden");
+    const email   = document.getElementById("otpEmail").value.trim();
+    const msgEl   = document.getElementById("sendOtpMsg");
+    const btnText = document.getElementById("btnSendOtpText");
+    const spinner = document.getElementById("btnSendOtpSpinner");
+    const btn     = document.getElementById("btnSendOtp");
 
-    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-    const password = document.getElementById("loginPassword").value;
+    showMsg(msgEl, "", "");
+    setLoading(btn, btnText, spinner, true);
+    const result = await SimpelAuth.requestOtp(email);
+    setLoading(btn, btnText, spinner, false);
 
-    const user = state.users.find(u => (u.email.toLowerCase() === email || u.name.toLowerCase() === email) && u.password === password);
+    if (!result.success) { showMsg(msgEl, result.message, "error-state"); return; }
 
-    if (!user) {
-      loginErrorMsg.textContent = "Email atau kata sandi tidak sesuai. Silakan periksa kembali.";
-      loginErrorMsg.classList.remove("hidden");
-      return;
-    }
-
-    state.setCurrentUser(user);
-    updateAuthUI();
-    modalLogin.classList.add("hidden");
-    formLogin.reset();
-
-    const roleLabel = (user.role === 'officer' || user.role === 'admin') ? 'Petugas Kota' : 'Warga';
-    showToast(`Berhasil masuk sebagai ${user.name} (${roleLabel})`);
-
-    // Ketika petugas login, langsung arahkan ke halaman khusus petugas (Panel Petugas)
-    if (user.role === "officer" || user.role === "admin") {
-      switchTab("tabAdmin");
-    }
+    document.getElementById("otpEmailDisplay").textContent = email;
+    document.getElementById("otpStep1").classList.add("hidden");
+    document.getElementById("otpStep2").classList.remove("hidden");
+    document.getElementById("otpCodeInput").focus();
   });
 
-  // Submit Register
-  formRegister?.addEventListener("submit", (e) => {
+  // ── MASYARAKAT — Langkah 2: Verifikasi OTP ──────────────────────────────
+  document.getElementById("formVerifyOtp")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    registerErrorMsg.classList.add("hidden");
+    const email   = document.getElementById("otpEmail").value.trim();
+    const code    = document.getElementById("otpCodeInput").value.trim();
+    const msgEl   = document.getElementById("verifyOtpMsg");
+    const btnText = document.getElementById("btnVerifyOtpText");
+    const spinner = document.getElementById("btnVerifyOtpSpinner");
+    const btn     = document.getElementById("btnVerifyOtp");
 
-    const role = "citizen"; // Pendaftaran publik hanya untuk akun Warga
-    const name = document.getElementById("regName").value.trim();
-    const email = document.getElementById("regEmail").value.trim().toLowerCase();
-    const phone = document.getElementById("regPhone").value.trim();
-    const identifier = document.getElementById("regIdentifier").value.trim();
-    const password = document.getElementById("regPassword").value;
-    const confirmPassword = document.getElementById("regConfirmPassword").value;
+    showMsg(msgEl, "", "");
+    setLoading(btn, btnText, spinner, true);
+    const result = await SimpelAuth.submitOtp(email, code);
+    setLoading(btn, btnText, spinner, false);
 
-    if (!name || !email || !phone || !identifier || !password) {
-      registerErrorMsg.textContent = "Harap lengkapi seluruh kolom bertanda bintang (*).";
-      registerErrorMsg.classList.remove("hidden");
-      return;
-    }
+    if (!result.success) { showMsg(msgEl, result.message, "error-state"); return; }
 
-    if (password.length < 6) {
-      registerErrorMsg.textContent = "Kata sandi minimal terdiri dari 6 karakter.";
-      registerErrorMsg.classList.remove("hidden");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      registerErrorMsg.textContent = "Konfirmasi kata sandi tidak cocok.";
-      registerErrorMsg.classList.remove("hidden");
-      return;
-    }
-
-    const existing = state.users.find(u => u.email.toLowerCase() === email);
-    if (existing) {
-      registerErrorMsg.textContent = "Alamat email ini sudah terdaftar. Silakan masuk menggunakan email tersebut.";
-      registerErrorMsg.classList.remove("hidden");
-      return;
-    }
-
-    const newUser = {
-      id: `USR-${Math.floor(100 + Math.random() * 900)}`,
-      name: name,
-      email: email,
-      password: password,
-      role: role,
-      phone: phone,
-      identifier: identifier,
-      agency: ""
-    };
-
-    state.users.push(newUser);
-    state.saveUsers();
-    state.setCurrentUser(newUser);
-
+    const apiUser   = result.user;
+    const localUser = { id: apiUser.id, name: apiUser.name, email: apiUser.email,
+                        role: "citizen", password: null, phone: "", agency: "" };
+    const existing  = state.users.find(u => u.email.toLowerCase() === apiUser.email.toLowerCase());
+    if (!existing) state.users.push(localUser);
+    state.setCurrentUser(existing || localUser);
     updateAuthUI();
-    modalRegister.classList.add("hidden");
-    formRegister.reset();
-
-    showToast(`Pendaftaran berhasil! Selamat datang, ${newUser.name}`);
+    closeLoginModal();
+    showToast("Selamat datang, " + apiUser.name + "! Login berhasil.");
   });
 
-  // Logout
+  // ── MASYARAKAT — Kirim Ulang OTP ─────────────────────────────────────────
+  document.getElementById("btnResendOtp")?.addEventListener("click", async () => {
+    const email = document.getElementById("otpEmail").value.trim();
+    const msgEl = document.getElementById("verifyOtpMsg");
+    showMsg(msgEl, "Mengirim ulang kode OTP...", "");
+    const result = await SimpelAuth.requestOtp(email);
+    if (result.success) {
+      document.getElementById("otpCodeInput").value = "";
+      showMsg(msgEl, "Kode OTP baru telah dikirim ke email Anda.", "success-state");
+    } else {
+      showMsg(msgEl, result.message, "error-state");
+    }
+  });
+
+  // ── ADMIN — Login Email + Password ──────────────────────────────────────
+  document.getElementById("formAdminLogin")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email    = document.getElementById("adminLoginEmail").value.trim();
+    const password = document.getElementById("adminLoginPassword").value;
+    const msgEl    = document.getElementById("adminLoginMsg");
+    const btnText  = document.getElementById("btnAdminLoginText");
+    const spinner  = document.getElementById("btnAdminLoginSpinner");
+    const btn      = document.getElementById("btnSubmitAdminLogin");
+
+    showMsg(msgEl, "", "");
+    setLoading(btn, btnText, spinner, true);
+    const result = await SimpelAuth.adminLogin(email, password);
+    setLoading(btn, btnText, spinner, false);
+
+    if (!result.success) { showMsg(msgEl, result.message, "error-state"); return; }
+
+    const apiUser   = result.user;
+    const adminUser = { id: apiUser.id, name: apiUser.name, email: apiUser.email,
+                        role: "admin", password: password, phone: "", agency: "Admin SIMPEL" };
+    const existing  = state.users.find(u => u.email.toLowerCase() === apiUser.email.toLowerCase());
+    if (!existing) state.users.push(adminUser);
+    state.setCurrentUser(existing || adminUser);
+    updateAuthUI();
+    closeLoginModal();
+    showToast("Login admin berhasil! Mengalihkan ke Portal Petugas...");
+    setTimeout(() => {
+      window.location.href = "/admin";
+    }, 450);
+  });
+
+  // ── LOGOUT ──────────────────────────────────────────────────────────────
   btnLogout?.addEventListener("click", () => {
     state.setCurrentUser(null);
     updateAuthUI();
@@ -583,6 +596,42 @@ function initAuthSystem() {
 
   // Terapkan status awal UI
   updateAuthUI();
+}
+
+// ── Helper Functions Autentikasi ──────────────────────────────────────────
+
+function resetLoginModal() {
+  document.getElementById("loginFlipCard")?.classList.remove("is-flipped");
+  document.getElementById("otpStep1")?.classList.remove("hidden");
+  document.getElementById("otpStep2")?.classList.add("hidden");
+  document.getElementById("formSendOtp")?.reset();
+  document.getElementById("formVerifyOtp")?.reset();
+  document.getElementById("formAdminLogin")?.reset();
+  ["sendOtpMsg","verifyOtpMsg","adminLoginMsg"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ""; el.className = "alert-box hidden"; }
+  });
+}
+
+/** Tutup modal login dan reset state-nya */
+function closeLoginModal() {
+  document.getElementById("modalLogin")?.classList.add("hidden");
+  resetLoginModal();
+}
+
+/** Tampilkan pesan pada elemen alert dengan kelas CSS tertentu */
+function showMsg(el, text, cssClass) {
+  if (!el) return;
+  el.textContent = text;
+  el.className   = "alert-box" + (text ? " " + cssClass : " hidden");
+}
+
+/** Toggle loading state: disable tombol, tampilkan/sembunyikan spinner */
+function setLoading(btn, textEl, spinnerEl, isLoading) {
+  if (!btn) return;
+  btn.disabled = isLoading;
+  textEl?.classList.toggle("hidden", isLoading);
+  spinnerEl?.classList.toggle("hidden", !isLoading);
 }
 
 function updateAuthUI() {
@@ -1095,7 +1144,7 @@ function initAdminDesk() {
   const search = document.getElementById("adminSearchInput");
   const pills = document.querySelectorAll(".tab-pill");
   const refreshBtn = document.getElementById("btnRefreshAdmin");
-  const exportBtn = document.getElementById("btnExportAdminCSV");
+  const exportBtn = document.getElementById("btnExportAdminPDF") || document.getElementById("btnExportAdminCSV");
 
   search?.addEventListener("input", renderAdminTable);
 
@@ -1112,7 +1161,7 @@ function initAdminDesk() {
     showToast("Data meja kerja petugas berhasil disegarkan.");
   });
 
-  exportBtn?.addEventListener("click", exportReportsCSV);
+  exportBtn?.addEventListener("click", exportReportsPDF);
 }
 
 function renderAdminTable() {

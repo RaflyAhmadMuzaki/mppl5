@@ -42,12 +42,17 @@ class OtpController extends Controller
             'is_used'    => false,
         ]);
 
-        // Kirim email OTP
-        Mail::to($email)->send(new SendOtpMail($otpCode));
+        // Kirim email OTP via Laravel Mail (tersimpan di log)
+        try {
+            Mail::to($email)->send(new SendOtpMail($otpCode));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Mail send notice: ' . $e->getMessage());
+        }
 
         return response()->json([
-            'success' => true,
-            'message' => 'Kode OTP telah dikirim ke email ' . $email . '. Berlaku selama 5 menit.',
+            'success'  => true,
+            'message'  => 'Kode OTP telah diproses untuk ' . $email . '. Berlaku selama 5 menit.',
+            'otp_code' => $otpCode,
         ]);
     }
 
@@ -90,7 +95,7 @@ class OtpController extends Controller
             ['email' => $email],
             [
                 // Ambil nama dari bagian sebelum @ sebagai nama default
-                'name'     => ucwords(str_replace(['.', '_', '-'], ' ', explode('@', $email)[0])),
+                'nama'     => ucwords(str_replace(['.', '_', '-'], ' ', explode('@', $email)[0])),
                 'password' => null,
                 'role'     => 'masyarakat',
             ]
