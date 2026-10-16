@@ -1,0 +1,2135 @@
+/* ==========================================================================
+   SIPELIK - Layanan Pengaduan Online Lingkungan Kota (Gaya Resmi LAPOR!)
+   Design System, LAPOR! Visual Identity, and Accessibility (Antislop Compliant)
+   ========================================================================== */
+
+:root {
+  /* LAPOR! Official Civic Red Palette */
+  --lapor-red-main: #c1121f;
+  --lapor-red-dark: #9b0d18;
+  --lapor-red-light: #fef2f2;
+  --lapor-red-border: #f87171;
+  --lapor-red-hover: #a80f1b;
+
+  /* Environmental Accent Tones */
+  --env-green: #059669;
+  --env-green-light: #ecfdf5;
+  --env-blue: #0284c7;
+  --env-blue-light: #f0f9ff;
+  --env-amber: #d97706;
+  --env-amber-light: #fffbeb;
+
+  /* Surfaces & Neutrals: Light Theme */
+  --bg-page: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-subtle: #f1f5f9;
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+
+  --text-title: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --text-white: #ffffff;
+
+  --focus-ring: #c1121f;
+  --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+
+
+/* Global Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-body);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Aksesibilitas */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 1rem;
+  background: var(--lapor-red-main);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  z-index: 9999;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  transition: top 0.2s ease;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* 1. Header Navbar Khas LAPOR! */
+.lapor-navbar {
+  background-color: var(--surface-card);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav-brand .brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-emblem {
+  width: 38px;
+  height: 38px;
+  background-color: var(--lapor-red-main);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-main {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--lapor-red-main);
+  letter-spacing: -0.02em;
+}
+
+.brand-sub {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 0.375rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  padding: 0.5rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-body);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  letter-spacing: 0.02em;
+}
+
+.nav-link:hover {
+  color: var(--lapor-red-main);
+  background-color: var(--surface-subtle);
+}
+
+.nav-link.active {
+  color: var(--lapor-red-main);
+  border-bottom: 2px solid var(--lapor-red-main);
+  border-radius: 0;
+}
+
+/* Auth Buttons & Profile Badge (Menggantikan role-pill) */
+.auth-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-auth-login {
+  background: none;
+  border: 1px solid var(--lapor-red-main);
+  color: var(--lapor-red-main);
+  padding: 0.4375rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-auth-login:hover {
+  background-color: var(--lapor-red-light);
+}
+
+.btn-auth-register {
+  background-color: var(--lapor-red-main);
+  border: 1px solid var(--lapor-red-main);
+  color: #ffffff;
+  padding: 0.4375rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-auth-register:hover {
+  background-color: var(--lapor-red-hover);
+}
+
+.auth-user-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-medium);
+  padding: 0.25rem 0.625rem 0.25rem 0.375rem;
+  border-radius: var(--radius-sm);
+}
+
+.user-avatar-initial {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--lapor-red-main);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.user-info-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.user-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-title);
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role-tag {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--lapor-red-main);
+}
+
+.btn-auth-logout {
+  background: none;
+  border: 1px solid var(--border-medium);
+  color: var(--text-muted);
+  padding: 0.375rem 0.625rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn-auth-logout:hover {
+  background-color: var(--lapor-red-light);
+  color: var(--lapor-red-main);
+  border-color: var(--lapor-red-border);
+}
+
+
+
+/* 2. Hero Merah Khas LAPOR! (Screenshot 1) */
+.lapor-hero {
+  background: linear-gradient(180deg, #c1121f 0%, #9b0d18 100%);
+  color: #ffffff;
+  padding: 3rem 1.25rem 7.5rem 1.25rem;
+  text-align: center;
+  position: relative;
+  overflow: visible;
+}
+
+.hero-overlay-waves {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background: url("data:image/svg+xml;utf8,<svg viewBox='0 0 1200 120' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'><path d='M0,0 C300,90 800,90 1200,0 L1200,120 L0,120 Z' fill='%23f8fafc'/></svg>") no-repeat center bottom;
+  background-size: cover;
+}
+
+
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.hero-title {
+  font-size: 2.125rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.hero-lead {
+  font-size: 1.0625rem;
+  color: #fecdd3;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* 3. Floating Card Formulir Laporan (Persis Screenshot 1) */
+.floating-form-container {
+  max-width: 760px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 20;
+}
+
+.floating-form-card {
+  background-color: var(--surface-card);
+  color: var(--text-title);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  padding: 2rem 2.25rem;
+  text-align: left;
+}
+
+.form-card-title {
+  font-size: 1.375rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--text-title);
+  margin-bottom: 1.25rem;
+}
+
+/* Tab Klasifikasi Aduan */
+.type-selector-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .type-selector-tabs {
+    flex-direction: column;
+  }
+}
+
+.type-tab-btn {
+  flex: 1;
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-medium);
+  padding: 0.625rem 0.5rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #94a3b8;
+}
+
+.type-tab-btn.active {
+  background-color: var(--lapor-red-main);
+  border-color: var(--lapor-red-main);
+  color: #ffffff;
+}
+
+.type-tab-btn.active .type-dot {
+  background-color: #ffffff;
+}
+
+/* Banner Panduan */
+.guide-banner {
+  background-color: var(--lapor-red-light);
+  border-left: 4px solid var(--lapor-red-main);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  color: var(--text-body);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.guide-link-btn {
+  background: none;
+  border: none;
+  color: var(--lapor-red-main);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  text-decoration: underline;
+}
+
+/* Form Fields */
+.lapor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .form-field-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-title);
+}
+
+.req {
+  color: var(--lapor-red-main);
+}
+
+.label-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.action-btn-text {
+  background: none;
+  border: none;
+  color: var(--lapor-red-main);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.action-btn-text:hover {
+  text-decoration: underline;
+}
+
+.field-input,
+.field-select,
+.field-textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-title);
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field-input:focus,
+.field-select:focus,
+.field-textarea:focus {
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 1px var(--focus-ring);
+}
+
+.field-textarea {
+  resize: vertical;
+  min-height: 85px;
+}
+
+/* Mini Leaflet Map Picker */
+.mini-map-box {
+  margin-top: 0.5rem;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.mini-leaflet-map {
+  height: 220px;
+  width: 100%;
+}
+
+.coords-info-bar {
+  background-color: var(--surface-subtle);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Upload Lampiran Area */
+.attachment-area {
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  background-color: var(--surface-subtle);
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.attachment-prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-upload-fake {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-medium);
+  padding: 0.4375rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-title);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.attachment-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.attachment-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.img-thumb {
+  width: 60px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+}
+
+.btn-delete-attach {
+  background: none;
+  border: none;
+  color: var(--lapor-red-main);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Opsi Privasi LAPOR! */
+.privacy-options-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 0.25rem 0;
+}
+
+.checkbox-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--text-body);
+}
+
+.checkbox-container input {
+  accent-color: var(--lapor-red-main);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Tombol Submit LAPOR! */
+.form-submit-row {
+  margin-top: 0.5rem;
+}
+
+.btn-lapor-submit {
+  width: 100%;
+  background-color: var(--lapor-red-main);
+  color: #ffffff;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  min-height: 48px;
+  transition: background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-lapor-submit:hover {
+  background-color: var(--lapor-red-hover);
+}
+
+/* 4. Lima Langkah Alur Proses (Screenshot 1) */
+.process-flow-section {
+  padding: 5.5rem 1.25rem 3rem 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.flow-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+@media (max-width: 880px) {
+  .flow-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .flow-arrow {
+    display: none;
+  }
+}
+
+.flow-step-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.flow-icon-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 2px solid var(--lapor-red-main);
+  color: var(--lapor-red-main);
+  background-color: var(--surface-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flow-step-title {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--text-title);
+}
+
+.flow-step-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  max-width: 190px;
+}
+
+.flow-arrow {
+  font-size: 1.5rem;
+  color: #94a3b8;
+  padding-top: 1rem;
+}
+
+.flow-action-center {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn-outline-red {
+  background: none;
+  border: 1px solid var(--lapor-red-main);
+  color: var(--lapor-red-main);
+  padding: 0.625rem 1.5rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-outline-red:hover {
+  background-color: var(--lapor-red-main);
+  color: #ffffff;
+}
+
+/* 5. Banner Jumlah Laporan Sekarang (Screenshot 1) */
+.counter-red-banner {
+  background: linear-gradient(90deg, #c1121f 0%, #9b0d18 100%);
+  color: #ffffff;
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.counter-heading {
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #fecdd3;
+  margin-bottom: 0.375rem;
+}
+
+.counter-huge-number {
+  font-size: 3.25rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.counter-sub {
+  font-size: 0.8125rem;
+  color: #fecdd3;
+  margin-top: 0.375rem;
+}
+
+/* 6. Instansi Terhubung */
+.connected-instansi-section {
+  max-width: 1100px;
+  margin: 3rem auto;
+  padding: 0 1.25rem;
+  text-align: center;
+}
+
+.instansi-heading {
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text-title);
+  margin-bottom: 1.5rem;
+}
+
+.instansi-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 680px) {
+  .instansi-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.instansi-stat-box {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.instansi-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--lapor-red-main);
+  line-height: 1.2;
+}
+
+.instansi-lbl {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* 7. Umpan Laporan Publik */
+.public-feed-section {
+  max-width: 1200px;
+  margin: 1rem auto 3rem auto;
+  padding: 0 1.25rem;
+}
+
+.section-title-wrap {
+  margin-bottom: 1.25rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-title);
+}
+
+.section-desc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.feed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.lapor-card-feed {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.feed-thumb {
+  height: 160px;
+  width: 100%;
+  object-fit: cover;
+  background-color: var(--surface-subtle);
+}
+
+.feed-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+.feed-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cat-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.1875rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-subtle);
+  color: var(--text-muted);
+  border: 1px solid var(--border-medium);
+}
+
+.status-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.1875rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.status-tag.pending { background: #fef3c7; color: #92400e; }
+.status-tag.process { background: #e0f2fe; color: #0369a1; }
+.status-tag.completed { background: #d1fae5; color: #065f46; }
+.status-tag.rejected { background: #ffe4e6; color: #9f1239; }
+
+.feed-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-title);
+  line-height: 1.3;
+}
+
+.feed-text {
+  font-size: 0.8125rem;
+  color: var(--text-body);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.feed-footer {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 8. Halaman Tab Universal Layout */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem 1.25rem;
+}
+
+.narrow-container {
+  max-width: 800px;
+}
+
+.page-header-strip {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.text-center-strip {
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-main-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-title);
+}
+
+.page-main-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Tab Peta Sebaran Full */
+.full-map-container {
+  height: 520px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.map-legend-bar {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--text-body);
+}
+
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.badge-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-pending { background-color: #f59e0b; }
+.dot-process { background-color: #0284c7; }
+.dot-completed { background-color: #059669; }
+.dot-rejected { background-color: #e11d48; }
+
+/* 9. Tab Lacak Tiket */
+.track-input-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+
+.search-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 540px) {
+  .search-input-group {
+    flex-direction: column;
+  }
+}
+
+.track-field {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.btn-track-action {
+  width: auto;
+  min-height: 44px;
+  padding: 0 1.5rem;
+  white-space: nowrap;
+}
+
+.ticket-full-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ticket-head-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 1rem;
+}
+
+.ticket-reg-code {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--lapor-red-main);
+}
+
+/* Stepper Lacak */
+.stepper-flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .stepper-flow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stepper-step {
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stepper-step.active {
+  border-color: var(--lapor-red-main);
+  background-color: var(--lapor-red-light);
+}
+
+.step-num-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--lapor-red-main);
+}
+
+.step-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-title);
+}
+
+.step-time {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.officer-note-card {
+  background-color: var(--surface-subtle);
+  border-left: 4px solid var(--lapor-red-main);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.officer-note-header {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--lapor-red-main);
+  margin-bottom: 0.25rem;
+}
+
+/* 10. Tab Statistik (Persis Screenshot 3) */
+.stat-kpi-badges {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.kpi-badge {
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-medium);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+}
+
+.analytics-row-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .analytics-row-two {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+}
+
+.full-width-chart {
+  margin-bottom: 1.5rem;
+}
+
+.chart-card-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-title);
+}
+
+.chart-card-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.pie-donut-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-height: 160px;
+}
+
+.stacked-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.stacked-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bar-labels-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-title);
+}
+
+.bar-track {
+  height: 12px;
+  background-color: var(--surface-subtle);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+}
+
+.bar-progress-red {
+  height: 100%;
+  background: var(--lapor-red-main);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+/* 11. Tab Tentang (Persis Screenshot 2) */
+.tentang-hero-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+}
+
+.tentang-title {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--lapor-red-main);
+  margin-bottom: 0.75rem;
+}
+
+.tentang-lead {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-title);
+}
+
+.tentang-divider {
+  height: 1px;
+  background-color: var(--border-light);
+  margin: 1.5rem 0;
+}
+
+.tentang-subtitle {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--text-title);
+  margin: 1.25rem 0 0.75rem 0;
+}
+
+.tentang-list {
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.features-pill-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .features-pill-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feat-card {
+  background-color: var(--surface-subtle);
+  border-left: 3px solid var(--lapor-red-main);
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.feat-card h4 {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--text-title);
+  margin-bottom: 0.25rem;
+}
+
+.feat-card p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.team-table-wrap {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+}
+
+.team-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.team-table th {
+  background-color: var(--surface-subtle);
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-medium);
+  font-weight: 800;
+}
+
+.team-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sprint-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.sprint-box {
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 0.875rem;
+}
+
+.sprint-num {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  background-color: var(--lapor-red-main);
+  color: #fff;
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 0.25rem;
+}
+
+.sprint-box h4 {
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.sprint-box p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 12. Tab Admin & Petugas Kota */
+.admin-top-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-badge {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--lapor-red-main);
+  background-color: var(--lapor-red-light);
+  padding: 0.1875rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.admin-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-title);
+  margin-top: 0.25rem;
+}
+
+.admin-sub {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.admin-quick-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.75rem;
+}
+
+.admin-table-wrapper {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+}
+
+.table-header-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.tab-filter-pills {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.tab-pill {
+  background: none;
+  border: 1px solid var(--border-medium);
+  padding: 0.375rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.tab-pill.active {
+  background-color: var(--lapor-red-main);
+  border-color: var(--lapor-red-main);
+  color: #fff;
+}
+
+.input-sm {
+  max-width: 280px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.lapor-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.lapor-data-table th {
+  background-color: var(--surface-subtle);
+  padding: 0.75rem 0.875rem;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border-medium);
+  white-space: nowrap;
+}
+
+.lapor-data-table td {
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.lapor-data-table tr:hover {
+  background-color: var(--surface-subtle);
+}
+
+.table-photo-thumb {
+  width: 48px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+}
+
+/* 13. Modals Khas LAPOR! */
+.lapor-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 3000;
+}
+
+.lapor-modal-dialog {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-dialog-sm { max-width: 420px; }
+.modal-dialog-md { max-width: 580px; }
+
+.modal-top {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title-text {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: var(--text-title);
+}
+
+.modal-close-icon {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.modal-content-area {
+  padding: 1.25rem;
+}
+
+.success-check-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #d1fae5;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem auto;
+}
+
+.ticket-big-box {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--lapor-red-main);
+  background-color: var(--lapor-red-light);
+  border: 1px dashed var(--lapor-red-border);
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  margin: 0.75rem 0;
+}
+
+.success-modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.guide-content ol {
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+}
+
+/* 14. Toast Notification */
+.toast-stack {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 4000;
+  pointer-events: none;
+}
+
+.toast-msg {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-medium);
+  border-left: 4px solid var(--lapor-red-main);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+  pointer-events: auto;
+}
+
+/* 15. Footer Khas LAPOR! (Screenshot 1 & 2) */
+.lapor-footer {
+  background-color: #0f172a;
+  color: #ffffff;
+  padding: 2.5rem 1.25rem 2rem 1.25rem;
+  margin-top: auto;
+  border-top: 3px solid var(--lapor-red-main);
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.footer-logos {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.gov-text-badge {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  padding: 0.375rem 0.75rem;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+
+.footer-links-row {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-link-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+}
+
+.footer-link-btn:hover {
+  color: #ffffff;
+}
+
+.footer-copy {
+  font-size: 0.6875rem;
+  color: #64748b;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1rem 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.auth-divider span {
+  padding: 0 0.5rem;
+}
+
+.auth-switch-text {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+}
+
+.auth-switch-btn {
+  background: none;
+  border: none;
+  color: var(--lapor-red-main);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  text-decoration: underline;
+}
+
+/* Petugas Login Button */
+.petugas-login-section {
+  text-align: center;
+}
+
+.btn-petugas-login {
+  width: 100%;
+  background-color: #1e293b;
+  color: #ffffff;
+  border: 1px solid #334155;
+  padding: 0.75rem 1.5rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease;
+  min-height: 44px;
+}
+
+.btn-petugas-login:hover {
+  background-color: #0f172a;
+  border-color: #0f172a;
+}
+
+/* Petugas Portal KPI Dashboard */
+.petugas-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .petugas-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.petugas-kpi-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.petugas-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.petugas-kpi-card.kpi-total { border-left: 4px solid #1e293b; }
+.petugas-kpi-card.kpi-pending { border-left: 4px solid #d97706; }
+.petugas-kpi-card.kpi-process { border-left: 4px solid #0284c7; }
+.petugas-kpi-card.kpi-done { border-left: 4px solid #059669; }
+
+.petugas-kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-total .petugas-kpi-icon { background-color: #f1f5f9; color: #1e293b; }
+.kpi-pending .petugas-kpi-icon { background-color: #fef3c7; color: #d97706; }
+.kpi-process .petugas-kpi-icon { background-color: #e0f2fe; color: #0284c7; }
+.kpi-done .petugas-kpi-icon { background-color: #d1fae5; color: #059669; }
+
+.petugas-kpi-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.petugas-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-title);
+  line-height: 1.1;
+}
+
+.petugas-kpi-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Utility Helpers */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+
+/* ==========================================================================
+   LOGIN CARD FLIP — Modal Autentikasi (Masyarakat OTP / Admin Password)
+   ========================================================================== */
+
+/* Backdrop tetap sama dengan modal biasa, tapi gunakan flex centering */
+#modalLogin.lapor-modal-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#modalLogin.lapor-modal-backdrop.hidden {
+  display: none !important;
+}
+
+/* Scene: container perspektif 3D */
+.login-flip-scene {
+  width: 100%;
+  max-width: 420px;
+  perspective: 1200px;
+  padding: 16px;
+}
+
+/* Card: elemen yang berputar */
+.login-flip-card {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.45, 0.05, 0.15, 1.00);
+  border-radius: 16px;
+}
+
+/* State flip aktif — putar ke belakang */
+.login-flip-card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* Kedua sisi kartu */
+.login-flip-face {
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--surface-card);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18), 0 4px 20px rgba(15, 23, 42, 0.10);
+  padding: 28px 28px 22px;
+  overflow: hidden;
+}
+
+/* Sisi belakang dirotasi 180° */
+.login-flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateY(180deg);
+  background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* ── Header kartu ──────────────────────────────── */
+.flip-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-light);
+}
+.login-flip-back .flip-card-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Ikon bulat di header */
+.flip-card-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flip-icon-citizen {
+  background: linear-gradient(135deg, var(--lapor-red-light), #fee2e2);
+  color: var(--lapor-red-main);
+  border: 1.5px solid var(--lapor-red-border);
+}
+.flip-icon-admin {
+  background: linear-gradient(135deg, #1e3a5f, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+}
+
+.flip-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-title);
+  margin: 0 0 3px;
+  line-height: 1.3;
+}
+.login-flip-back .flip-card-title {
+  color: #f1f5f9;
+}
+
+.flip-card-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+.login-flip-back .flip-card-subtitle {
+  color: #94a3b8;
+}
+
+/* Tombol close di pojok kanan header */
+.flip-close-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.flip-close-btn:hover {
+  background: var(--surface-subtle);
+  color: var(--text-title);
+}
+.login-flip-back .flip-close-btn {
+  color: #94a3b8;
+}
+.login-flip-back .flip-close-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+}
+
+/* ── OTP Steps ──────────────────────────────────── */
+.otp-step {
+  transition: opacity 0.2s ease;
+}
+
+/* Notifikasi OTP terkirim */
+.otp-sent-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.82rem;
+  color: #065f46;
+}
+.otp-sent-notice svg {
+  flex-shrink: 0;
+  stroke: #059669;
+}
+
+/* Input OTP code — font besar, centered, spaced */
+.otp-code-input {
+  text-align: center;
+  font-size: 1.6rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.35em !important;
+  font-family: 'Courier New', monospace !important;
+  color: var(--lapor-red-main) !important;
+  border-color: var(--lapor-red-border) !important;
+  background: var(--lapor-red-light) !important;
+}
+.otp-code-input:focus {
+  outline: 3px solid var(--lapor-red-border) !important;
+  border-color: var(--lapor-red-main) !important;
+}
+
+/* ── Tombol Submit Admin ─────────────────────────── */
+.btn-admin-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+.btn-admin-submit:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
+}
+.btn-admin-submit.full-width { width: 100%; }
+
+/* Override form field colors for dark admin side */
+.login-flip-back .field-label {
+  color: #cbd5e1;
+}
+.login-flip-back .field-input {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+}
+.login-flip-back .field-input::placeholder {
+  color: #64748b;
+}
+.login-flip-back .field-input:focus {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: #3b82f6;
+  outline-color: rgba(59, 130, 246, 0.35);
+}
+
+/* ── Tombol Toggle Flip ────────────────────────── */
+.flip-toggle-row {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+  text-align: center;
+}
+.login-flip-back .flip-toggle-row {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.btn-flip-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1.5px solid var(--border-medium);
+  border-radius: 20px;
+  padding: 9px 18px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-flip-toggle:hover {
+  background: var(--lapor-red-light);
+  border-color: var(--lapor-red-border);
+  color: var(--lapor-red-main);
+  transform: scale(1.02);
+}
+.btn-flip-toggle svg {
+  flex-shrink: 0;
+}
+.btn-flip-back {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+}
+.btn-flip-back:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #e2e8f0;
+}
+
+/* ── Alert box variants ────────────────────────── */
+.alert-box {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.83rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.alert-box.error,
+.alert-box.error-state {
+  background: var(--lapor-red-light);
+  border: 1px solid var(--lapor-red-border);
+  color: var(--lapor-red-dark);
+}
+.alert-box.success-state {
+  background: #ecfdf5;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+
+/* ── Loading spinner ────────────────────────────── */
+.btn-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Stripe animasi di atas kartu saat flipped */
+.login-flip-front::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--lapor-red-main), #f87171, var(--lapor-red-main));
+  background-size: 200% 100%;
+  animation: shimmer-bar 3s ease infinite;
+  border-radius: 16px 16px 0 0;
+}
+.login-flip-back::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #60a5fa, #2563eb);
+  background-size: 200% 100%;
+  animation: shimmer-bar 3s ease infinite;
+  border-radius: 16px 16px 0 0;
+}
+@keyframes shimmer-bar {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
