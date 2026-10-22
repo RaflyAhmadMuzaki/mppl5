@@ -1,58 +1,142 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SIMPEL — Sistem Informasi Pelaporan Lingkungan Kota
+> **Tugas Besar Manajemen Proyek Perangkat Lunak (MPPL) — Semester 5**  
+> Solusi digital terintegrasi untuk pemantauan, pelaporan, dan tindak lanjut isu lingkungan hidup perkotaan berbasis partisipasi masyarakat dan Geographic Information System (GIS).
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 👥 Tim Pengembang — Kelompok 5 MPPL
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| No | Nama Anggota | NIM | Peran / Tanggung Jawab |
+|:--:|:---|:---:|:---|
+| 1 | **Rafly Ahmad Muzaki** | *3578012345670001* | **Project Lead & Fullstack Developer** (Arsitektur Sistem, UI/UX, Backend Laravel, Integrasi GIS & EmailJS) |
+| 2 | *Anggota Kelompok 5* | *NIM Anggota* | Frontend Developer & Asset Management |
+| 3 | *Anggota Kelompok 5* | *NIM Anggota* | Database Designer & Business Logic Analyst |
+| 4 | *Anggota Kelompok 5* | *NIM Anggota* | Quality Assurance, Testing & Dokumentasi MPPL |
+| 5 | *Anggota Kelompok 5* | *NIM Anggota* | System Analyst & Scrum Documentation |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+> *(Catatan: Rekan tim dapat memperbarui baris nama dan NIM masing-masing sesuai data kelompok presensi MPPL).*
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📌 Latar Belakang & Gambaran Umum
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**SIMPEL (Sistem Informasi Pelaporan Lingkungan Kota)** adalah platform partisipasi publik modern yang menghubungkan warga perkotaan dengan instansi kedinasan lingkungan hidup secara transparan, cepat, dan akuntabel. Terinspirasi dari standar tata kelola aduan nasional **SP4N-LAPOR!**, SIMPEL mendigitalkan alur penanganan masalah lingkungan seperti tumpukan sampah liar, limbah industri, polusi udara, kerusakan ruang terbuka hijau (RTH), dan genangan drainase.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Dengan SIMPEL, warga tidak hanya dapat mengirimkan aduan beserta foto bukti dan titik presisi peta, tetapi juga dapat memantau transparansi penanganan secara terbuka pada feed **Laporan Masuk Terkini**, serta mengeksplorasi titik-titik insiden pada **Peta Sebaran Interaktif**.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 🚀 Fitur Unggulan Sistem
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 1. 📝 Formulir Pengaduan Cerdas & Berbasis Lokasi (GIS)
+- **Klasifikasi Aduan**: Mendukung tipe *Pengaduan*, *Aspirasi*, dan *Permintaan Informasi*.
+- **Smart City Geocoding**: Form secara otomatis mengenali nama kota/kecamatan (seperti **Bandung, Sumedang, Surabaya, Jakarta, Semarang, Yogyakarta**, dsb.) dan memosisikan koordinat GPS secara presisi.
+- **Interactive Mini Map Picker**: Warga dapat mencari jalan/kota, menggunakan tombol **GPS Saya**, atau menggeser pin lokasi langsung di peta.
+- **Anti-Overlapping Markers**: Koordinat diolah sedemikian rupa agar aduan pada lokasi yang sama tidak saling bertumpuk dan tetap dapat diklik secara terpisah.
 
-```bash
-composer require laravel/boost --dev
+### 2. 👤 Transparansi Nama Akun & Opsi Anonim
+- **Identitas Transparan**: Setiap warga yang mengirimkan aduan/aspirasi akan tertera nama akunnya secara otomatis pada feed publik.
+- **Opsi Anonim**: Warga dapat mencentang opsi *Kirim sebagai Anonim* apabila ingin menyembunyikan identitas akunnya dari publik demi privasi dan keamanan pelapor.
+- **Privasi Rahasia**: Opsi rahasia untuk aduan sensitif yang hanya dapat dibaca oleh aparat verifikator dinas.
 
-php artisan boost:install
-```
+### 3. 🗺️ Peta Persebaran Interaktif Publik
+- Peta sebaran insiden lingkungan berbasis **Leaflet JS & OpenStreetMap**.
+- Dilengkapi **Auto-Fit Bounds**: Peta otomatis menyesuaikan rentang zoom dan pusat pandang agar semua titik penanda dari berbagai daerah (misal titik di Bandung dan Surabaya) langsung terlihat bersamaan di layar.
+- Filter interaktif berdasarkan status penanganan (*Menunggu Verifikasi*, *Sedang Diproses*, *Selesai*, *Ditolak*) dan kategori isu.
+- Pop-up penanda dilengkapi informasi pelapor, ringkasan aduan, dan tombol langsung **Lihat Detail Aduan**.
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 4. 📰 Laporan Masuk Terkini & Pop-up Detail
+- Menampilkan daftar laporan masuk terbaru masyarakat secara langsung di beranda.
+- Setiap kartu menampilkan foto bukti, kategori, status, nama akun pengirim (atau badge *Anonim*), wilayah kejadian, dan tanggal.
+- Klik pada kartu laporan untuk membuka **Modal Detail Aduan Transparan**, yang memuat alur tindak lanjut dinas serta catatan resmi petugas lapangan.
 
-## Contributing
+### 5. 🛡️ Portal Resmi Petugas / Admin (`/admin`)
+- **Meja Kerja Petugas**: Validasi status laporan (*Menunggu Verifikasi*, *Diproses*, *Selesai*, *Ditolak*) dan pemberian catatan tindak lanjut regu lapangan.
+- **Peta Pantau Wilayah (GIS Monitoring)**: Peta terdedikasi petugas dengan visualisasi warna status insiden kota dan fitur pemusatan peta (*Reset Bounds*).
+- **Dashboard Analitik**: Diagram proporsi klasifikasi aduan, rasio status penanganan, dan statistik isu lingkungan per wilayah.
+- **Ekspor Dokumen Resmi**: Unduh rekapitulasi data laporan ke dalam format **PDF Resmi** bersertifikat instansi.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 6. 🔐 Autentikasi Pengguna & Petugas
+- **Warga**: Masuk aman tanpa password rumit menggunakan kode verifikasi **OTP Email Nyata** (dikirimkan langsung ke kotak masuk pengguna melalui integrasi EmailJS).
+- **Petugas / Administrator**: Login berotoritas tinggi dengan kredensial staf dinas resmi.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🛠️ Arsitektur & Teknologi (Tech Stack)
 
-## Security Vulnerabilities
+| Lapisan | Teknologi yang Digunakan |
+|:---|:---|
+| **Backend Framework** | [Laravel 12](https://laravel.com) (PHP 8.2+) |
+| **Frontend Rendering** | Blade Templating Engine, Semantic HTML5 |
+| **Styling & Design System** | Modern Vanilla CSS (LAPOR! Civic Red visual identity, Flexbox/Grid, Responsive Mobile-First) |
+| **Peta Digital (GIS)** | [Leaflet.js](https://leafletjs.com/) v1.9.4 & OpenStreetMap Tiles |
+| **Layanan Email OTP** | EmailJS Browser SDK & Laravel OTP Service |
+| **Ekspor PDF** | jsPDF & jsPDF-AutoTable |
+| **Penyimpanan Data** | SQLite / MySQL & Browser Local Storage Synchronization |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 💻 Panduan Menjalankan Proyek Secara Lokal
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Prasyarat
+- PHP >= 8.2
+- Composer
+- Node.js & npm
+
+### Langkah Instalasi
+
+1. **Clone repositori dan masuk ke direktori proyek**:
+   ```bash
+   cd simpel-app
+   ```
+
+2. **Salin berkas lingkungan (`.env`)**:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Install dependensi PHP & JavaScript**:
+   ```bash
+   composer install
+   npm install
+   ```
+
+4. **Generate application key**:
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Jalankan migrasi database**:
+   ```bash
+   php artisan migrate
+   ```
+
+6. **Jalankan server pengembangan**:
+   Buka dua terminal terpisah:
+   ```bash
+   # Terminal 1: Laravel Backend
+   php artisan serve
+   ```
+   ```bash
+   # Terminal 2: Asset Bundler
+   npm run dev
+   ```
+
+7. **Akses aplikasi di browser**:
+   - **Portal Warga**: `http://127.0.0.1:8000`
+   - **Portal Petugas / Admin**: `http://127.0.0.1:8000/admin`
+
+---
+
+## 📜 Kredensial Uji Coba Default
+
+- **Akun Warga**: Masukkan email aktif Anda pada menu **Masuk**, sistem akan mengirimkan 6 digit OTP langsung ke email Anda.
+- **Akun Administrator**:
+  - Email: `admin@simpel.go.id`
+  - Password: `admin123`
+
+---
+
+## 📄 Lisensi & Hak Cipta
+Hak Cipta &copy; 2026 **SIMPEL — Kelompok 5 Manajemen Proyek Perangkat Lunak (MPPL)**.  
+Dikembangkan untuk keperluan akademik dan kemajuan tata kelola lingkungan kota berkelanjutan.

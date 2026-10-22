@@ -26,30 +26,38 @@
   <!-- Aksesibilitas: Skip Link -->
   <a href="#mainContent" class="skip-link">Langsung ke formulir laporan</a>
 
-  <!-- Top Bar / Navbar Bergaya LAPOR! -->
+  <!-- Top Bar / Navbar Bergaya LAPOR! (Responsif Desktop & Mobile) -->
   <header class="lapor-navbar">
     <div class="nav-container">
-      <div class="nav-brand">
-        <a href="#home" class="brand-link" id="brandHomeLink">
-          <div class="brand-emblem" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
-            </svg>
-          </div>
-          <div class="brand-text">
-            <span class="brand-main">SIMPEL</span>
-            <span class="brand-sub">Pengaduan Lingkungan Kota</span>
-          </div>
-        </a>
+      <div class="nav-brand-group">
+        <button type="button" class="btn-citizen-toggle" id="btnCitizenDrawerOpen" aria-label="Buka Menu Navigasi Samping">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="nav-brand">
+          <a href="#home" class="brand-link" id="brandHomeLink">
+            <div class="brand-emblem" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+              </svg>
+            </div>
+            <div class="brand-text">
+              <span class="brand-main">SIMPEL</span>
+              <span class="brand-sub">Pengaduan Lingkungan Kota</span>
+            </div>
+          </a>
+        </div>
       </div>
 
-      <!-- Menu Navigasi Utama -->
+      <!-- Menu Navigasi Desktop -->
       <nav class="nav-menu" id="mainNavMenu" aria-label="Menu Utama">
         <button type="button" class="nav-link active" data-tab="tabBeranda">BERANDA</button>
         <button type="button" class="nav-link" data-tab="tabPeta">PETA SEBARAN</button>
-        <button type="button" class="nav-link" data-tab="tabLacak">LACAK TIKET</button>
         <button type="button" class="nav-link" data-tab="tabStatistik">STATISTIK</button>
         <button type="button" class="nav-link" data-tab="tabTentang">TENTANG SIMPEL</button>
         <a href="/admin" class="nav-link hidden" id="navLinkAdmin" style="color:#c1121f;font-weight:800;">PORTAL PETUGAS &rarr;</a>
@@ -76,6 +84,112 @@
       </div>
     </div>
   </header>
+
+  <!-- ── BACKDROP & SIDEBAR NAVIGASI SAMPING MASYARAKAT (Sesuai Screenshot 3) ── -->
+  <div class="citizen-drawer-backdrop" id="citizenDrawerBackdrop"></div>
+
+  <aside class="citizen-side-drawer" id="citizenMobileDrawer" aria-label="Navigasi Samping SIMPEL">
+    <div class="citizen-drawer-header">
+      <div class="citizen-drawer-brand">
+        <div class="brand-emblem" aria-hidden="true" style="width:34px;height:34px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-main" style="font-size:1.1rem;">SIMPEL</span>
+          <span class="brand-sub" style="font-size:0.62rem;">Pengaduan Lingkungan</span>
+        </div>
+      </div>
+      <button type="button" class="btn-close-drawer" id="btnCitizenDrawerClose" aria-label="Tutup Menu">&times;</button>
+    </div>
+
+    <!-- Navigasi Menu Vertikal dengan Icon & Red Pill Aktif Sesuai Screenshot 3 -->
+    <nav class="citizen-side-nav">
+      <span class="drawer-section-title">MENU UTAMA</span>
+
+      <button type="button" class="citizen-side-btn active" data-tab="tabBeranda">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Beranda</span>
+      </button>
+
+      <button type="button" class="citizen-side-btn" data-tab="tabPeta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+          <line x1="8" y1="2" x2="8" y2="18"></line>
+          <line x1="16" y1="6" x2="16" y2="22"></line>
+        </svg>
+        <span>Peta Sebaran</span>
+      </button>
+
+
+      <button type="button" class="citizen-side-btn" data-tab="tabStatistik">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Statistik</span>
+      </button>
+
+      <button type="button" class="citizen-side-btn" data-tab="tabTentang">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>Tentang SIMPEL</span>
+      </button>
+
+      <span class="drawer-section-title" id="drawerPetugasTitle">PORTAL RESMI</span>
+      <a href="/admin" class="citizen-side-btn" id="drawerLinkAdmin" style="color:#c1121f; font-weight:700;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Portal Petugas Kota &rarr;</span>
+      </a>
+    </nav>
+
+    <!-- Profil & Autentikasi Pengguna di Bawah Sidebar (Sudah Login / Belum Login) -->
+    <div class="citizen-drawer-footer">
+      <!-- Mode Belum Login (Guest) -->
+      <div class="drawer-guest-auth" id="drawerGuestGroup">
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.6rem;">Akses akun warga untuk lapor dan lacak otomatis:</p>
+        <button type="button" class="btn-drawer-login" id="btnDrawerLogin">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+            <polyline points="10 17 15 12 10 7"></polyline>
+            <line x1="15" y1="12" x2="3" y2="12"></line>
+          </svg>
+          Masuk ke Akun
+        </button>
+        <button type="button" class="btn-drawer-register" id="btnDrawerRegister">Daftar Akun Baru</button>
+      </div>
+
+      <!-- Mode Sudah Login -->
+      <div class="drawer-user-auth hidden" id="drawerUserGroup">
+        <div class="drawer-user-card">
+          <div class="drawer-avatar-circle" id="drawerAvatarInitial">W</div>
+          <div class="drawer-user-meta">
+            <span class="drawer-user-name" id="drawerDisplayName">Nama Pengguna</span>
+            <span class="drawer-user-role" id="drawerDisplayRole">Warga</span>
+          </div>
+        </div>
+        <button type="button" class="btn-drawer-logout" id="btnDrawerLogout">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Keluar dari Akun
+        </button>
+      </div>
+    </div>
+  </aside>
 
   <!-- Konten Aplikasi Utama -->
   <main id="mainContent">
@@ -159,12 +273,23 @@
                 <input type="text" id="selectWilayah" class="field-input" list="daftarKecamatan"
                   placeholder="Ketik wilayah / kecamatan lokasi kejadian (bebas di mana saja)..." required>
                 <datalist id="daftarKecamatan">
+                  <option value="Bandung">
+                  <option value="Sumedang">
+                  <option value="Surabaya">
+                  <option value="Jakarta">
                   <option value="Sukajadi">
-                  <option value="Menteng">
-                  <option value="Wonokromo">
                   <option value="Cibiru">
-                  <option value="Gambir">
+                  <option value="Wonokromo">
                   <option value="Gubeng">
+                  <option value="Menteng">
+                  <option value="Gambir">
+                  <option value="Semarang">
+                  <option value="Yogyakarta">
+                  <option value="Malang">
+                  <option value="Bogor">
+                  <option value="Bekasi">
+                  <option value="Tangerang">
+                  <option value="Depok">
                 </datalist>
               </div>
                 <div class="form-field">
@@ -196,10 +321,15 @@
 
                 <!-- Mini Leaflet Map Picker (Foldable) -->
                 <div id="miniMapPickerBox" class="mini-map-box hidden">
+                  <div class="mini-map-search-row">
+                    <input type="text" id="miniMapSearchInput" placeholder="Ketik nama kota / lokasi (misal: Bandung, Sumedang, Sukajadi)..." class="field-input field-input-sm">
+                    <button type="button" id="btnSearchMiniMap" class="btn-outline-red btn-sm">Cari</button>
+                    <button type="button" id="btnGpsMiniMap" class="btn-outline-red btn-sm" title="Deteksi GPS Saya">GPS Saya</button>
+                  </div>
                   <div id="formMiniMap" class="mini-leaflet-map" aria-label="Pilih koordinat pada peta"></div>
                   <div class="coords-info-bar">
-                    <span>Koordinat Titik: <strong id="miniMapCoordsText">-7.2575, 112.7521</strong></span>
-                    <span class="mini-map-note">(Geser pin atau klik peta untuk menentukan lokasi presisi)</span>
+                    <span>Koordinat: <strong id="miniMapCoordsText">-7.2575, 112.7521</strong></span>
+                    <span class="mini-map-note" id="miniMapLocationHint">(Geser pin atau klik peta di kota Anda)</span>
                   </div>
                 </div>
               </div>
@@ -229,12 +359,24 @@
                 </div>
               </div>
 
+              <!-- Identitas Pengirim & Opsi Anonim -->
+              <div class="sender-identity-box" id="senderIdentityBox">
+                <div class="sender-identity-header">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <span>Identitas Pengirim: <strong id="senderAccountNameDisplay">Warga (Tamu)</strong></span>
+                </div>
+                <p class="sender-identity-note" id="senderIdentitySub">Nama akun Anda akan tertera secara transparan pada <strong>Laporan Masuk Terkini</strong> agar publik dan petugas dapat mengetahui pelapornya.</p>
+              </div>
+
               <!-- Opsi Privasi LAPOR! (Anonim & Rahasia) -->
               <div class="privacy-options-row">
                 <label class="checkbox-container">
                   <input type="checkbox" id="checkAnonim">
                   <span class="checkbox-custom"></span>
-                  <span class="checkbox-text">Anonim (Nama Anda tidak dipublikasikan)</span>
+                  <span class="checkbox-text">Kirim sebagai <strong>Anonim</strong> (Nama akun disembunyikan dari publik di Laporan Masuk Terkini)</span>
                 </label>
                 <label class="checkbox-container">
                   <input type="checkbox" id="checkRahasia">
@@ -415,43 +557,7 @@
       </section>
     </div>
 
-    <!-- ============================================================== -->
-    <!-- TAB 3: LACAK TIKET (REAL-TIME TRACKING SESUAI SLIDE 4 & 5 PDF)  -->
-    <!-- ============================================================== -->
-    <div id="tabLacak" class="tab-page hidden">
-      <section class="page-container narrow-container">
-        <div class="page-header-strip text-center-strip">
-          <h2 class="page-main-title">Lacak Status Pengaduan Lingkungan</h2>
-          <p class="page-main-desc">Masukkan nomor tiket aduan yang Anda terima untuk melihat transparansi proses
-            penanganan dan catatan petugas lapangan.</p>
-        </div>
 
-        <div class="track-input-card">
-          <div class="search-input-group">
-            <input type="text" id="inputKodeTiket" class="field-input track-field"
-              placeholder="Masukkan nomor tiket, contoh: LAP-2026-0128" aria-label="Kode Tiket Aduan">
-            <button type="button" class="btn-lapor-submit btn-track-action" id="btnCariTiket">Cek Status</button>
-          </div>
-        </div>
-
-        <div id="trackResultDisplay" class="track-result-box">
-          <div class="empty-state" id="trackEmptyNotice">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-              class="empty-icon">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <h4 class="empty-title">Belum Ada Tiket yang Diperiksa</h4>
-            <p class="empty-desc">Gunakan kolom pencarian di atas atau pilih salah satu laporan untuk melihat progres
-              penanganannya.</p>
-          </div>
-
-          <div id="trackDetailContainer" class="ticket-full-card hidden">
-            <!-- Diisi secara dinamis oleh JavaScript -->
-          </div>
-        </div>
-      </section>
-    </div>
 
     <!-- ============================================================== -->
     <!-- TAB 4: STATISTIK (GRAFIK PERSIS SCREENSHOT 3 LAPOR!)           -->
@@ -654,15 +760,27 @@
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
-        <p class="success-lead">Laporan pengaduan Anda telah terdaftar dalam sistem SIPELIK dengan nomor registrasi:</p>
+        <p class="success-lead">Laporan Anda telah berhasil masuk ke sistem SIMPEL dengan nomor registrasi:</p>
         <div class="ticket-big-box" id="successTicketCode">LAP-2026-0000</div>
-        <p class="success-caption">Gunakan nomor tiket ini untuk memantau kemajuan tindak lanjut dan respon dinas
-          berwenang.</p>
+        <p class="success-caption" id="successSenderCaption">Laporan Anda kini tampil pada <strong>Laporan Masuk Terkini</strong> dan segera diverifikasi petugas dinas.</p>
         <div class="success-modal-buttons">
-          <button type="button" class="btn-lapor-submit full-width" id="btnTrackSubmittedTicket">Lacak Tiket
-            Sekarang</button>
-          <button type="button" class="btn-outline-red full-width" id="btnDoneSubmitModal">Kembali ke Beranda</button>
+          <button type="button" class="btn-lapor-submit full-width" id="btnViewRecentReports">Lihat di Laporan Masuk Terkini &rarr;</button>
+          <button type="button" class="btn-outline-red full-width" id="btnDoneSubmitModal">Tutup</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DETAIL LAPORAN MASUK TERKINI & PETA -->
+  <div id="modalReportDetail" class="lapor-modal-backdrop hidden" role="dialog" aria-modal="true"
+    aria-labelledby="modalDetailTitle">
+    <div class="lapor-modal-dialog modal-dialog-md">
+      <div class="modal-top">
+        <h3 id="modalDetailTitle" class="modal-title-text">Detail Laporan Lingkungan</h3>
+        <button type="button" class="modal-close-icon" id="btnCloseReportDetail" aria-label="Tutup dialog">&times;</button>
+      </div>
+      <div class="modal-content-area" id="modalReportDetailBody">
+        <!-- Konten detail diisi dinamis oleh JavaScript -->
       </div>
     </div>
   </div>

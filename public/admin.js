@@ -17,6 +17,7 @@ const SEED_DATA = [
     lat: -7.2575,
     lng: 112.7521,
     status: "Menunggu Verifikasi",
+    reporterName: "Budi Santoso",
     isAnonymous: false,
     isSecret: false,
     officerNote: "Menunggu penugasan regu pengangkut sampah dinas wilayah Sukajadi.",
@@ -35,6 +36,7 @@ const SEED_DATA = [
     lat: -7.2625,
     lng: 112.7480,
     status: "Diproses",
+    reporterName: "Siti Rahmawati",
     isAnonymous: false,
     isSecret: false,
     officerNote: "Tim laboratorium lingkungan dinas telah mengambil sampel air untuk uji baku mutu laboratorium.",
@@ -53,9 +55,10 @@ const SEED_DATA = [
     lat: -7.2915,
     lng: 112.7390,
     status: "Selesai",
+    reporterName: "Anonim",
     isAnonymous: true,
     isSecret: false,
-    completedAt: new Date().toISOString(), // Di-set agar tidak langsung terhapus saat baru dimuat
+    completedAt: new Date().toISOString(),
     officerNote: "Pagar telah diperbaiki dan bangku baru telah dipasang oleh petugas dinas pertamanan.",
     photoUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%23064e3b'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23a7f3d0' text-anchor='middle'>Perbaikan Fasilitas RTH</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%23ecfdf5' text-anchor='middle'>Status: Selesai Ditangani</text></svg>"
   },
@@ -72,6 +75,7 @@ const SEED_DATA = [
     lat: -7.2450,
     lng: 112.7650,
     status: "Diproses",
+    reporterName: "Anonim",
     isAnonymous: true,
     isSecret: true,
     officerNote: "Satpol PP dan petugas dinas mendatangi lokasi dan memberikan sanksi peringatan.",
@@ -101,7 +105,6 @@ class AdminState {
     } catch (e) {
       console.warn("Auth parse error:", e);
     }
-    // Jika belum login admin, set akun admin default
     const defaultAdmin = {
       id: 1,
       name: "Administrator SIMPEL",
@@ -118,7 +121,6 @@ class AdminState {
     return (reportsList || []).filter(item => {
       if (item.status === "Selesai") {
         const finishTime = item.completedAt ? new Date(item.completedAt).getTime() : new Date(item.date).getTime();
-        // Hapus jika sudah lebih dari 24 jam
         if (now - finishTime >= TWENTY_FOUR_HOURS_MS) {
           return false;
         }
@@ -136,6 +138,40 @@ class AdminState {
     }
   }
 
+  migrateReports(reports) {
+    if (!Array.isArray(reports)) return [...SEED_DATA];
+    return reports.map((r, i) => {
+      if (!r.reporterName) {
+        if (r.isAnonymous) {
+          r.reporterName = "Anonim";
+        } else if (r.id === "LAP-2026-0128") {
+          r.reporterName = "Budi Santoso";
+        } else if (r.id === "LAP-2026-0129") {
+          r.reporterName = "Siti Rahmawati";
+        } else {
+          r.reporterName = "Warga SIMPEL";
+        }
+      }
+
+      const locText = `${r.district || ''} ${r.address || ''} ${r.title || ''}`.toLowerCase();
+      const isDefaultSurabaya = Math.abs(r.lat - (-7.2575)) < 0.05 && Math.abs(r.lng - 112.7521) < 0.05;
+
+      if (isDefaultSurabaya) {
+        if (locText.includes("bandung")) {
+          r.lat = Number((-6.9175 + (Math.sin(i + 1) * 0.012)).toFixed(5));
+          r.lng = Number((107.6191 + (Math.cos(i + 1) * 0.012)).toFixed(5));
+        } else if (locText.includes("sumedang")) {
+          r.lat = Number((-6.8584 + (Math.sin(i + 1) * 0.012)).toFixed(5));
+          r.lng = Number((107.9266 + (Math.cos(i + 1) * 0.012)).toFixed(5));
+        } else if (locText.includes("jakarta")) {
+          r.lat = Number((-6.2088 + (Math.sin(i + 1) * 0.012)).toFixed(5));
+          r.lng = Number((106.8456 + (Math.cos(i + 1) * 0.012)).toFixed(5));
+        }
+      }
+      return r;
+    });
+  }
+
   loadReports() {
     let reports = [];
     try {
@@ -146,6 +182,7 @@ class AdminState {
       console.warn("Storage read error:", e);
       reports = [...SEED_DATA];
     }
+    reports = this.migrateReports(reports);
     reports = this.filterExpiredCompleted(reports);
     localStorage.setItem(this.storageKey, JSON.stringify(reports));
     return reports;
@@ -197,22 +234,57 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 60000);
 });
 
-// 1. Navigasi Tab Internal Admin
+// 1. Navigasi Tab Internal Admin & Sidebar
 function initAdminNavigation() {
-  const tabs = document.querySelectorAll(".admin-nav-tab");
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
+  const sidebar = document.getElementById("adminSidebar");
+  const backdrop = document.getElementById("adminSidebarBackdrop");
+  const toggleBtn = document.getElementById("btnAdminSidebarToggle");
+  const closeBtn = document.getElementById("btnAdminSidebarClose");
 
-      const targetId = tab.getAttribute("data-tab");
+  const openSidebar = () => {
+    sidebar?.classList.add("open");
+    backdrop?.classList.add("active");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeSidebar = () => {
+    sidebar?.classList.remove("open");
+    backdrop?.classList.remove("active");
+    document.body.style.overflow = "";
+  };
+
+  toggleBtn?.addEventListener("click", openSidebar);
+  closeBtn?.addEventListener("click", closeSidebar);
+  backdrop?.addEventListener("click", closeSidebar);
+
+  // Tab buttons (sidebar items)
+  const tabButtons = document.querySelectorAll(".admin-side-btn[data-tab], .admin-nav-tab");
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabButtons.forEach(t => t.classList.remove("active"));
+      btn.classList.add("active");
+
+      const targetId = btn.getAttribute("data-tab");
       document.querySelectorAll(".admin-tab-content").forEach(c => c.classList.remove("active"));
       const targetContent = document.getElementById(targetId);
       if (targetContent) targetContent.classList.add("active");
 
+      // Tutup drawer di mobile jika terbuka
+      closeSidebar();
+
       // Invalidate peta jika beralih ke tab peta
       if (targetId === "tabAdminPeta") {
-        setTimeout(() => adminState.adminMap?.invalidateSize(), 200);
+        setTimeout(() => {
+          if (!adminState.adminMap) {
+            initAdminMap();
+          } else {
+            adminState.adminMap.invalidateSize(true);
+            renderAdminMapMarkers();
+          }
+        }, 150);
+        setTimeout(() => {
+          adminState.adminMap?.invalidateSize(true);
+        }, 400);
       }
       if (targetId === "tabAdminStatistik") {
         renderAdminStatistics();
@@ -268,10 +340,17 @@ function updateKpiCards() {
   const process = adminState.reports.filter(r => r.status === "Diproses").length;
   const done = adminState.reports.filter(r => r.status === "Selesai").length;
 
-  document.getElementById("petugasKpiTotal").textContent = total;
-  document.getElementById("petugasKpiPending").textContent = pending;
-  document.getElementById("petugasKpiProcess").textContent = process;
-  document.getElementById("petugasKpiDone").textContent = done;
+  const totalEl = document.getElementById("petugasKpiTotal");
+  const pendingEl = document.getElementById("petugasKpiPending");
+  const processEl = document.getElementById("petugasKpiProcess");
+  const doneEl = document.getElementById("petugasKpiDone");
+  const sidePendingEl = document.getElementById("sideBadgePending");
+
+  if (totalEl) totalEl.textContent = total;
+  if (pendingEl) pendingEl.textContent = pending;
+  if (processEl) processEl.textContent = process;
+  if (doneEl) doneEl.textContent = done;
+  if (sidePendingEl) sidePendingEl.textContent = pending;
 }
 
 function renderAdminTable() {
@@ -401,13 +480,46 @@ function initAdminMap() {
   const mapEl = document.getElementById("adminLeafletMap");
   if (!mapEl || typeof L === "undefined") return;
 
-  adminState.adminMap = L.map("adminLeafletMap").setView([-7.2575, 112.7521], 12);
+  if (adminState.adminMap) {
+    adminState.adminMap.invalidateSize(true);
+    renderAdminMapMarkers();
+    return;
+  }
+
+  adminState.adminMap = L.map("adminLeafletMap", {
+    zoomControl: true,
+    scrollWheelZoom: true
+  }).setView([-7.2575, 112.7521], 12);
+
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
-    attribution: "&copy; OpenStreetMap"
+    attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
   }).addTo(adminState.adminMap);
 
+  document.getElementById("filterAdminMapStatus")?.addEventListener("change", renderAdminMapMarkers);
+  document.getElementById("btnAdminMapResetBounds")?.addEventListener("click", () => {
+    fitAdminMapBounds();
+    showToast("Peta berhasil dipusatkan pada seluruh titik laporan.");
+  });
+
   renderAdminMapMarkers();
+
+  setTimeout(() => {
+    adminState.adminMap?.invalidateSize(true);
+    fitAdminMapBounds();
+  }, 300);
+}
+
+function fitAdminMapBounds() {
+  if (!adminState.adminMap) return;
+  const validLatLngs = [];
+  adminState.reports.forEach(r => {
+    if (r.lat && r.lng) validLatLngs.push([Number(r.lat), Number(r.lng)]);
+  });
+  if (validLatLngs.length > 0) {
+    const bounds = L.latLngBounds(validLatLngs);
+    adminState.adminMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+  }
 }
 
 function renderAdminMapMarkers() {
@@ -416,8 +528,34 @@ function renderAdminMapMarkers() {
   adminState.adminMapMarkers.forEach(m => adminState.adminMap.removeLayer(m));
   adminState.adminMapMarkers = [];
 
-  adminState.reports.forEach(r => {
-    if (!r.lat || !r.lng) return;
+  const filterStatus = document.getElementById("filterAdminMapStatus")?.value || "ALL";
+
+  const list = adminState.reports.filter(r => {
+    if (!r.lat || !r.lng) return false;
+    return filterStatus === "ALL" || r.status === filterStatus;
+  });
+
+  const usedCoords = {};
+  const latLngs = [];
+
+  list.forEach(r => {
+    let lat = Number(r.lat);
+    let lng = Number(r.lng);
+
+    // Jitter if points overlap
+    const coordKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
+    if (usedCoords[coordKey]) {
+      const step = usedCoords[coordKey];
+      const angle = step * (Math.PI / 3);
+      const radius = 0.003 * Math.ceil(step / 6);
+      lat += Math.sin(angle) * radius;
+      lng += Math.cos(angle) * radius;
+      usedCoords[coordKey]++;
+    } else {
+      usedCoords[coordKey] = 1;
+    }
+
+    latLngs.push([lat, lng]);
 
     let markerColor = "#f59e0b"; // Menunggu
     if (r.status === "Diproses") markerColor = "#0284c7";
@@ -426,23 +564,35 @@ function renderAdminMapMarkers() {
 
     const customIcon = L.divIcon({
       className: "custom-map-pin",
-      html: `<div style="background:${markerColor}; width:16px; height:16px; border-radius:50%; border:3px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>`,
-      iconSize: [16, 16],
-      iconAnchor: [8, 8]
+      html: `<div style="background:${markerColor}; width:18px; height:18px; border-radius:50%; border:3px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.45);"></div>`,
+      iconSize: [18, 18],
+      iconAnchor: [9, 9]
     });
 
-    const marker = L.marker([r.lat, r.lng], { icon: customIcon }).addTo(adminState.adminMap);
+    const isAnon = r.isAnonymous || r.reporterName === "Anonim";
+    const authorName = escapeHtml(r.reporterName || (isAnon ? "Anonim" : "Warga SIMPEL"));
+
+    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(adminState.adminMap);
     marker.bindPopup(`
       <div style="font-family:'Inter',sans-serif; max-width:240px; padding:4px;">
         <span style="font-size:10px; font-weight:800; color:#c1121f;">${escapeHtml(r.id)}</span>
         <h4 style="font-size:13px; font-weight:800; margin:2px 0;">${escapeHtml(r.title)}</h4>
-        <p style="font-size:11px; color:#475569; margin:2px 0;">Wilayah: ${escapeHtml(r.district || "-")}</p>
-        <span class="status-tag ${getStatusClass(r.status)}" style="font-size:10px; padding:2px 6px;">${escapeHtml(r.status)}</span>
+        <p style="font-size:11px; color:#1e293b; margin:2px 0;">Pelapor: <strong>${authorName}</strong> ${isAnon ? '<span style="font-size:9px; background:#f1f5f9; padding:1px 4px; border-radius:3px;">Anonim</span>' : ''}</p>
+        <p style="font-size:11px; color:#475569; margin:2px 0;">Wilayah: ${escapeHtml(r.district || "-")} (${escapeHtml(r.address || "")})</p>
+        <div style="margin:4px 0;"><span class="status-tag ${getStatusClass(r.status)}" style="font-size:10px; padding:2px 6px;">${escapeHtml(r.status)}</span></div>
+        <button type="button" class="btn-outline-red btn-sm" style="width:100%; margin-top:4px;" onclick="openActionModal('${r.id}')">
+          Tindak Lanjut &rarr;
+        </button>
       </div>
     `);
 
     adminState.adminMapMarkers.push(marker);
   });
+
+  if (latLngs.length > 0) {
+    const bounds = L.latLngBounds(latLngs);
+    adminState.adminMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+  }
 }
 
 // 5. Statistik & Analitik Kinerja Admin

@@ -19,8 +19,9 @@ if (typeof emailjs !== 'undefined') {
  * Sesuaikan jika APP_URL berubah atau saat deploy ke production.
  * @type {string}
  */
-const SIMPEL_API_BASE = (window.SIMPEL_API_BASE || 'http://localhost:8000') + '/api';
-
+const SIMPEL_API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? (window.location.origin + '/api')
+  : ((window.SIMPEL_API_BASE || 'https://simpelkota.page.gd') + '/api');
 /**
  * Header default untuk semua request JSON ke Laravel.
  * Menyertakan X-Requested-With agar Laravel mengenali request AJAX.
@@ -212,6 +213,7 @@ const SEED_DATA = [
     lat: -7.2575,
     lng: 112.7521,
     status: "Menunggu Verifikasi",
+    reporterName: "Budi Santoso",
     isAnonymous: false,
     isSecret: false,
     officerNote: "Menunggu penugasan regu pengangkut sampah dinas wilayah Sukajadi.",
@@ -230,6 +232,7 @@ const SEED_DATA = [
     lat: -7.2625,
     lng: 112.7480,
     status: "Diproses",
+    reporterName: "Siti Rahmawati",
     isAnonymous: false,
     isSecret: false,
     officerNote: "Tim laboratorium lingkungan dinas telah mengambil sampel air untuk uji baku mutu laboratorium.",
@@ -248,6 +251,7 @@ const SEED_DATA = [
     lat: -7.2915,
     lng: 112.7390,
     status: "Selesai",
+    reporterName: "Anonim",
     isAnonymous: true,
     isSecret: false,
     officerNote: "Pagar telah diperbaiki dan bangku baru telah dipasang oleh petugas dinas pertamanan.",
@@ -266,12 +270,43 @@ const SEED_DATA = [
     lat: -7.2450,
     lng: 112.7650,
     status: "Diproses",
+    reporterName: "Anonim",
     isAnonymous: true,
     isSecret: true,
     officerNote: "Satpol PP dan petugas dinas mendatangi lokasi dan memberikan sanksi peringatan.",
     photoUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%233f3f46'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23fbbf24' text-anchor='middle'>Bukti Polusi Asap</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%23f4f4f5' text-anchor='middle'>Lokasi: Blok C Pergudangan</text></svg>"
   }
 ];
+
+const INDONESIA_CITY_COORDS = {
+  "bandung": [-6.9175, 107.6191],
+  "sumedang": [-6.8584, 107.9266],
+  "surabaya": [-7.2575, 112.7521],
+  "jakarta": [-6.2088, 106.8456],
+  "sukajadi": [-6.8858, 107.5932],
+  "cibiru": [-6.9248, 107.7167],
+  "wonokromo": [-7.3012, 112.7378],
+  "gubeng": [-7.2736, 112.7547],
+  "menteng": [-6.1969, 106.8361],
+  "gambir": [-6.1754, 106.8272],
+  "semarang": [-6.9667, 110.4167],
+  "yogyakarta": [-7.7956, 110.3695],
+  "jogja": [-7.7956, 110.3695],
+  "malang": [-7.9666, 112.6326],
+  "bogor": [-6.5971, 106.8060],
+  "bekasi": [-6.2383, 106.9756],
+  "tangerang": [-6.1783, 106.6319],
+  "depok": [-6.4025, 106.7942],
+  "solo": [-7.5755, 110.8243],
+  "cirebon": [-6.7320, 108.5523],
+  "cimahi": [-6.8722, 107.5420],
+  "tasikmalaya": [-7.3274, 108.2207],
+  "garut": [-7.2278, 107.9087],
+  "medan": [3.5952, 98.6722],
+  "makassar": [-5.1477, 119.4327],
+  "denpasar": [-8.6705, 115.2126],
+  "bali": [-8.4095, 115.1889]
+};
 
 const DEFAULT_USERS = [
   {
@@ -375,15 +410,55 @@ class LaporState {
     }
   }
 
+  migrateReports(reports) {
+    if (!Array.isArray(reports)) return [...SEED_DATA];
+    return reports.map((r, i) => {
+      // 1. Pastikan nama pelapor terisi
+      if (!r.reporterName) {
+        if (r.isAnonymous) {
+          r.reporterName = "Anonim";
+        } else if (r.id === "LAP-2026-0128") {
+          r.reporterName = "Budi Santoso";
+        } else if (r.id === "LAP-2026-0129") {
+          r.reporterName = "Siti Rahmawati";
+        } else {
+          r.reporterName = "Warga SIMPEL";
+        }
+      }
+
+      // 2. Koreksi otomatis koordinat jika pengguna memilih Bandung/Sumedang/Jakarta tapi sebelumnya tersimpan koordinat default Surabaya (-7.2575)
+      const locText = `${r.district || ''} ${r.address || ''} ${r.title || ''}`.toLowerCase();
+      const isDefaultSurabaya = Math.abs(r.lat - (-7.2575)) < 0.05 && Math.abs(r.lng - 112.7521) < 0.05;
+
+      if (isDefaultSurabaya) {
+        if (locText.includes("bandung")) {
+          r.lat = Number((-6.9175 + (Math.sin(i + 1) * 0.012)).toFixed(5));
+          r.lng = Number((107.6191 + (Math.cos(i + 1) * 0.012)).toFixed(5));
+        } else if (locText.includes("sumedang")) {
+          r.lat = Number((-6.8584 + (Math.sin(i + 1) * 0.012)).toFixed(5));
+          r.lng = Number((107.9266 + (Math.cos(i + 1) * 0.012)).toFixed(5));
+        } else if (locText.includes("jakarta")) {
+          r.lat = Number((-6.2088 + (Math.sin(i + 1) * 0.012)).toFixed(5));
+          r.lng = Number((106.8456 + (Math.cos(i + 1) * 0.012)).toFixed(5));
+        }
+      }
+      return r;
+    });
+  }
+
   loadReports() {
+    let list = [];
     try {
       const data = localStorage.getItem(this.storageKey);
-      if (data) return JSON.parse(data);
+      if (data) list = JSON.parse(data);
+      else list = [...SEED_DATA];
     } catch (e) {
       console.warn("Storage read error:", e);
+      list = [...SEED_DATA];
     }
-    localStorage.setItem(this.storageKey, JSON.stringify(SEED_DATA));
-    return [...SEED_DATA];
+    const migrated = this.migrateReports(list);
+    localStorage.setItem(this.storageKey, JSON.stringify(migrated));
+    return migrated;
   }
 
   saveReports() {
@@ -441,13 +516,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-// 2. Tab Navigation
+// 2. Tab Navigation & Mobile Side Drawer
 function initTabsNavigation() {
+  const drawer = document.getElementById("citizenMobileDrawer");
+  const backdrop = document.getElementById("citizenDrawerBackdrop");
+  const openBtn = document.getElementById("btnCitizenDrawerOpen");
+  const closeBtn = document.getElementById("btnCitizenDrawerClose");
+
+  const openDrawer = () => {
+    drawer?.classList.add("open");
+    backdrop?.classList.add("active");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeDrawer = () => {
+    drawer?.classList.remove("open");
+    backdrop?.classList.remove("active");
+    document.body.style.overflow = "";
+  };
+
+  openBtn?.addEventListener("click", openDrawer);
+  closeBtn?.addEventListener("click", closeDrawer);
+  backdrop?.addEventListener("click", closeDrawer);
+
+  // Desktop horizontal nav links
   const navLinks = document.querySelectorAll(".nav-link");
   navLinks.forEach(link => {
     link.addEventListener("click", () => {
       const targetTab = link.getAttribute("data-tab");
       switchTab(targetTab);
+    });
+  });
+
+  // Mobile side drawer nav buttons (Screenshot 3 style)
+  const sideBtns = document.querySelectorAll(".citizen-side-btn[data-tab]");
+  sideBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetTab = btn.getAttribute("data-tab");
+      switchTab(targetTab);
+      closeDrawer();
     });
   });
 
@@ -460,19 +567,27 @@ function initTabsNavigation() {
 
 // Sistem Autentikasi Pengguna — Card Flip OTP (Masyarakat) + Password (Admin)
 function initAuthSystem() {
-  const btnOpenLogin    = document.getElementById("btnOpenLogin");
+  const btnOpenLogin = document.getElementById("btnOpenLogin");
   const btnOpenRegister = document.getElementById("btnOpenRegister");
-  const btnLogout       = document.getElementById("btnLogout");
-  const modalLogin      = document.getElementById("modalLogin");
+  const btnDrawerLogin = document.getElementById("btnDrawerLogin");
+  const btnDrawerRegister = document.getElementById("btnDrawerRegister");
+  const btnLogout = document.getElementById("btnLogout");
+  const btnDrawerLogout = document.getElementById("btnDrawerLogout");
+  const modalLogin = document.getElementById("modalLogin");
 
-  // Buka modal login (Masyarakat OTP) saat klik "Masuk" atau "Daftar" (Opsi B)
+  // Buka modal login saat klik "Masuk" atau "Daftar" (Desktop & Drawer Samping)
   const openAuthModal = () => {
+    document.getElementById("citizenMobileDrawer")?.classList.remove("open");
+    document.getElementById("citizenDrawerBackdrop")?.classList.remove("active");
+    document.body.style.overflow = "";
     resetLoginModal();
     modalLogin?.classList.remove("hidden");
   };
 
   btnOpenLogin?.addEventListener("click", openAuthModal);
   btnOpenRegister?.addEventListener("click", openAuthModal);
+  btnDrawerLogin?.addEventListener("click", openAuthModal);
+  btnDrawerRegister?.addEventListener("click", openAuthModal);
 
   // Tombol tutup sisi depan & belakang
   document.getElementById("btnCloseLogin")?.addEventListener("click", closeLoginModal);
@@ -494,11 +609,11 @@ function initAuthSystem() {
   // ── MASYARAKAT — Langkah 1: Kirim OTP ───────────────────────────────────
   document.getElementById("formSendOtp")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email   = document.getElementById("otpEmail").value.trim();
-    const msgEl   = document.getElementById("sendOtpMsg");
+    const email = document.getElementById("otpEmail").value.trim();
+    const msgEl = document.getElementById("sendOtpMsg");
     const btnText = document.getElementById("btnSendOtpText");
     const spinner = document.getElementById("btnSendOtpSpinner");
-    const btn     = document.getElementById("btnSendOtp");
+    const btn = document.getElementById("btnSendOtp");
 
     showMsg(msgEl, "", "");
     setLoading(btn, btnText, spinner, true);
@@ -516,12 +631,12 @@ function initAuthSystem() {
   // ── MASYARAKAT — Langkah 2: Verifikasi OTP ──────────────────────────────
   document.getElementById("formVerifyOtp")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email   = document.getElementById("otpEmail").value.trim();
-    const code    = document.getElementById("otpCodeInput").value.trim();
-    const msgEl   = document.getElementById("verifyOtpMsg");
+    const email = document.getElementById("otpEmail").value.trim();
+    const code = document.getElementById("otpCodeInput").value.trim();
+    const msgEl = document.getElementById("verifyOtpMsg");
     const btnText = document.getElementById("btnVerifyOtpText");
     const spinner = document.getElementById("btnVerifyOtpSpinner");
-    const btn     = document.getElementById("btnVerifyOtp");
+    const btn = document.getElementById("btnVerifyOtp");
 
     showMsg(msgEl, "", "");
     setLoading(btn, btnText, spinner, true);
@@ -530,10 +645,12 @@ function initAuthSystem() {
 
     if (!result.success) { showMsg(msgEl, result.message, "error-state"); return; }
 
-    const apiUser   = result.user;
-    const localUser = { id: apiUser.id, name: apiUser.name, email: apiUser.email,
-                        role: "citizen", password: null, phone: "", agency: "" };
-    const existing  = state.users.find(u => u.email.toLowerCase() === apiUser.email.toLowerCase());
+    const apiUser = result.user;
+    const localUser = {
+      id: apiUser.id, name: apiUser.name, email: apiUser.email,
+      role: "citizen", password: null, phone: "", agency: ""
+    };
+    const existing = state.users.find(u => u.email.toLowerCase() === apiUser.email.toLowerCase());
     if (!existing) state.users.push(localUser);
     state.setCurrentUser(existing || localUser);
     updateAuthUI();
@@ -558,12 +675,12 @@ function initAuthSystem() {
   // ── ADMIN — Login Email + Password ──────────────────────────────────────
   document.getElementById("formAdminLogin")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email    = document.getElementById("adminLoginEmail").value.trim();
+    const email = document.getElementById("adminLoginEmail").value.trim();
     const password = document.getElementById("adminLoginPassword").value;
-    const msgEl    = document.getElementById("adminLoginMsg");
-    const btnText  = document.getElementById("btnAdminLoginText");
-    const spinner  = document.getElementById("btnAdminLoginSpinner");
-    const btn      = document.getElementById("btnSubmitAdminLogin");
+    const msgEl = document.getElementById("adminLoginMsg");
+    const btnText = document.getElementById("btnAdminLoginText");
+    const spinner = document.getElementById("btnAdminLoginSpinner");
+    const btn = document.getElementById("btnSubmitAdminLogin");
 
     showMsg(msgEl, "", "");
     setLoading(btn, btnText, spinner, true);
@@ -572,10 +689,12 @@ function initAuthSystem() {
 
     if (!result.success) { showMsg(msgEl, result.message, "error-state"); return; }
 
-    const apiUser   = result.user;
-    const adminUser = { id: apiUser.id, name: apiUser.name, email: apiUser.email,
-                        role: "admin", password: password, phone: "", agency: "Admin SIMPEL" };
-    const existing  = state.users.find(u => u.email.toLowerCase() === apiUser.email.toLowerCase());
+    const apiUser = result.user;
+    const adminUser = {
+      id: apiUser.id, name: apiUser.name, email: apiUser.email,
+      role: "admin", password: password, phone: "", agency: "Admin SIMPEL"
+    };
+    const existing = state.users.find(u => u.email.toLowerCase() === apiUser.email.toLowerCase());
     if (!existing) state.users.push(adminUser);
     state.setCurrentUser(existing || adminUser);
     updateAuthUI();
@@ -587,12 +706,18 @@ function initAuthSystem() {
   });
 
   // ── LOGOUT ──────────────────────────────────────────────────────────────
-  btnLogout?.addEventListener("click", () => {
+  const handleLogout = () => {
+    document.getElementById("citizenMobileDrawer")?.classList.remove("open");
+    document.getElementById("citizenDrawerBackdrop")?.classList.remove("active");
+    document.body.style.overflow = "";
     state.setCurrentUser(null);
     updateAuthUI();
     switchTab("tabBeranda");
     showToast("Anda telah keluar dari akun.");
-  });
+  };
+
+  btnLogout?.addEventListener("click", handleLogout);
+  btnDrawerLogout?.addEventListener("click", handleLogout);
 
   // Terapkan status awal UI
   updateAuthUI();
@@ -607,7 +732,7 @@ function resetLoginModal() {
   document.getElementById("formSendOtp")?.reset();
   document.getElementById("formVerifyOtp")?.reset();
   document.getElementById("formAdminLogin")?.reset();
-  ["sendOtpMsg","verifyOtpMsg","adminLoginMsg"].forEach(id => {
+  ["sendOtpMsg", "verifyOtpMsg", "adminLoginMsg"].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.textContent = ""; el.className = "alert-box hidden"; }
   });
@@ -623,7 +748,7 @@ function closeLoginModal() {
 function showMsg(el, text, cssClass) {
   if (!el) return;
   el.textContent = text;
-  el.className   = "alert-box" + (text ? " " + cssClass : " hidden");
+  el.className = "alert-box" + (text ? " " + cssClass : " hidden");
 }
 
 /** Toggle loading state: disable tombol, tampilkan/sembunyikan spinner */
@@ -642,32 +767,61 @@ function updateAuthUI() {
   const userName = document.getElementById("userDisplayName");
   const userRole = document.getElementById("userDisplayRole");
 
+  // Drawer mobile elements (Screenshot 3 style)
+  const drawerGuest = document.getElementById("drawerGuestGroup");
+  const drawerUser = document.getElementById("drawerUserGroup");
+  const drawerInitial = document.getElementById("drawerAvatarInitial");
+  const drawerName = document.getElementById("drawerDisplayName");
+  const drawerRole = document.getElementById("drawerDisplayRole");
+  const drawerLinkAdmin = document.getElementById("drawerLinkAdmin");
+  const drawerPetugasTitle = document.getElementById("drawerPetugasTitle");
+
   if (state.currentUser) {
     guestGroup?.classList.add("hidden");
     userGroup?.classList.remove("hidden");
+    drawerGuest?.classList.add("hidden");
+    drawerUser?.classList.remove("hidden");
 
-    if (userInitial) userInitial.textContent = state.currentUser.name.charAt(0).toUpperCase();
-    if (userName) userName.textContent = state.currentUser.name;
+    const initial = (state.currentUser.name || "W").charAt(0).toUpperCase();
+    if (userInitial) userInitial.textContent = initial;
+    if (drawerInitial) drawerInitial.textContent = initial;
+
+    if (userName) userName.textContent = state.currentUser.name || "Warga SIMPEL";
+    if (drawerName) drawerName.textContent = state.currentUser.name || "Warga SIMPEL";
+
+    const isOfficer = state.currentUser.role === "officer" || state.currentUser.role === "admin";
+    const roleText = isOfficer ? "Petugas Kota" : "Warga";
     if (userRole) {
-      const isOfficer = state.currentUser.role === "officer" || state.currentUser.role === "admin";
-      userRole.textContent = isOfficer ? "Petugas Kota" : "Warga";
+      userRole.textContent = roleText;
       userRole.style.color = isOfficer ? "var(--lapor-red-main)" : "#059669";
+    }
+    if (drawerRole) {
+      drawerRole.textContent = roleText;
+      drawerRole.style.color = isOfficer ? "var(--lapor-red-main)" : "#059669";
     }
 
     // Tampilkan nav link Panel Petugas hanya untuk akun Petugas
-    if (state.currentUser.role === "officer" || state.currentUser.role === "admin") {
+    if (isOfficer) {
       navLinkAdmin?.classList.remove("hidden");
+      drawerLinkAdmin?.classList.remove("hidden");
+      drawerPetugasTitle?.classList.remove("hidden");
     } else {
       navLinkAdmin?.classList.add("hidden");
+      drawerLinkAdmin?.classList.add("hidden");
+      drawerPetugasTitle?.classList.add("hidden");
     }
   } else {
     guestGroup?.classList.remove("hidden");
     userGroup?.classList.add("hidden");
+    drawerGuest?.classList.remove("hidden");
+    drawerUser?.classList.add("hidden");
     navLinkAdmin?.classList.add("hidden");
+    drawerLinkAdmin?.classList.add("hidden");
+    drawerPetugasTitle?.classList.add("hidden");
   }
 }
 
-window.switchTab = function(tabId) {
+window.switchTab = function (tabId) {
   if (tabId === "tabAdmin" && (!state.currentUser || (state.currentUser.role !== "officer" && state.currentUser.role !== "admin"))) {
     showToast("Akses Panel Petugas khusus untuk akun Petugas Kota. Silakan masuk sebagai petugas.");
     document.getElementById("modalLogin")?.classList.remove("hidden");
@@ -676,6 +830,9 @@ window.switchTab = function(tabId) {
 
   document.querySelectorAll(".tab-page").forEach(page => page.classList.add("hidden"));
   document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+  document.querySelectorAll(".citizen-side-btn[data-tab]").forEach(b => {
+    b.classList.toggle("active", b.getAttribute("data-tab") === tabId);
+  });
 
   const targetPage = document.getElementById(tabId);
   if (targetPage) targetPage.classList.remove("hidden");
@@ -752,6 +909,51 @@ function initFormAndUpload() {
     promptBox.classList.remove("hidden");
   });
 
+  const wilayahInput = document.getElementById("selectWilayah");
+  const alamatInput = document.getElementById("inputAlamat");
+  const anonCheck = document.getElementById("checkAnonim");
+
+  const syncIdentityPreview = () => {
+    const isAnon = anonCheck ? anonCheck.checked : false;
+    const senderDisplay = document.getElementById("senderAccountNameDisplay");
+    const senderSub = document.getElementById("senderIdentitySub");
+    if (senderDisplay) {
+      if (isAnon) {
+        senderDisplay.textContent = "Anonim (Disamarkan dari publik)";
+        senderDisplay.style.color = "#64748b";
+      } else if (state.currentUser) {
+        senderDisplay.textContent = `${state.currentUser.name} (Akun Anda)`;
+        senderDisplay.style.color = "#059669";
+      } else {
+        senderDisplay.textContent = "Warga (Tamu)";
+        senderDisplay.style.color = "#1e293b";
+      }
+    }
+    if (senderSub) {
+      if (isAnon) {
+        senderSub.textContent = "Nama akun Anda tidak akan dipublikasikan. Laporan akan terdaftar atas nama 'Anonim' di Laporan Masuk Terkini.";
+      } else if (state.currentUser) {
+        senderSub.innerHTML = `Nama akun <strong>${escapeHtml(state.currentUser.name)}</strong> akan tertera secara transparan pada <strong>Laporan Masuk Terkini</strong>.`;
+      } else {
+        senderSub.textContent = "Masuk ke akun Anda agar nama akun Anda tertera otomatis, atau centang Anonim untuk menyembunyikan identitas.";
+      }
+    }
+  };
+
+  anonCheck?.addEventListener("change", syncIdentityPreview);
+  syncIdentityPreview();
+
+  const handleLocationInputChange = () => {
+    const query = `${wilayahInput?.value || ""} ${alamatInput?.value || ""}`.trim();
+    if (query.length >= 3) {
+      resolveCityLocation(query);
+    }
+  };
+
+  wilayahInput?.addEventListener("input", handleLocationInputChange);
+  wilayahInput?.addEventListener("change", handleLocationInputChange);
+  alamatInput?.addEventListener("change", handleLocationInputChange);
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     alertBox.classList.add("hidden");
@@ -760,7 +962,7 @@ function initFormAndUpload() {
     const isi = document.getElementById("inputIsi").value.trim();
     const tanggal = document.getElementById("inputTanggal").value;
     const kategori = document.getElementById("selectKategori").value;
-    const wilayah = document.getElementById("selectWilayah").value;
+    const wilayah = document.getElementById("selectWilayah").value.trim();
     const instansi = document.getElementById("selectInstansi").value;
     const alamat = document.getElementById("inputAlamat").value.trim();
     const isAnon = document.getElementById("checkAnonim").checked;
@@ -771,6 +973,9 @@ function initFormAndUpload() {
       alertBox.classList.remove("hidden");
       return;
     }
+
+    // Pastikan koordinat sesuai dengan kota/wilayah yang dipilih
+    resolveCityLocation(`${wilayah} ${alamat}`);
 
     if (!state.activePhotoBase64) {
       state.activePhotoBase64 = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%239b0d18'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23ffffff' text-anchor='middle'>Bukti Aduan: ${escapeHtml(kategori)}</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%23fecdd3' text-anchor='middle'>${escapeHtml(alamat)}</text></svg>`;
@@ -792,7 +997,7 @@ function initFormAndUpload() {
       lat: state.activeCoords.lat,
       lng: state.activeCoords.lng,
       status: "Menunggu Verifikasi",
-      reporterName: isAnon ? "Anonim" : (state.currentUser ? state.currentUser.name : "Warga Kota"),
+      reporterName: isAnon ? "Anonim" : (state.currentUser ? state.currentUser.name : "Warga SIMPEL"),
       reporterPhone: isAnon ? "" : (state.currentUser ? state.currentUser.phone : ""),
       isAnonymous: isAnon,
       isSecret: isSecret,
@@ -810,15 +1015,41 @@ function initFormAndUpload() {
     state.activePhotoBase64 = "";
     previewBox.classList.add("hidden");
     promptBox.classList.remove("hidden");
+    syncIdentityPreview();
 
     openSuccessModal(newId);
   });
+}
+
+function resolveCityLocation(query) {
+  if (!query) return false;
+  const q = query.toLowerCase();
+  for (const [cityName, coords] of Object.entries(INDONESIA_CITY_COORDS)) {
+    if (q.includes(cityName)) {
+      const jitterLat = Number((coords[0] + (Math.random() - 0.5) * 0.008).toFixed(5));
+      const jitterLng = Number((coords[1] + (Math.random() - 0.5) * 0.008).toFixed(5));
+      updateFormCoords(jitterLat, jitterLng);
+      const hint = document.getElementById("miniMapLocationHint");
+      if (hint) hint.textContent = `(Lokasi terdeteksi di area ${cityName.toUpperCase()})`;
+
+      if (state.miniMap) {
+        state.miniMap.setView([jitterLat, jitterLng], 13);
+        if (state.miniMapMarker) state.miniMapMarker.setLatLng([jitterLat, jitterLng]);
+      }
+      return true;
+    }
+  }
+  return false;
 }
 
 // 5. Mini Leaflet Map Picker
 function initMiniMapPicker() {
   const btnToggle = document.getElementById("btnToggleMiniMap");
   const box = document.getElementById("miniMapPickerBox");
+  const searchInput = document.getElementById("miniMapSearchInput");
+  const btnSearch = document.getElementById("btnSearchMiniMap");
+  const btnGps = document.getElementById("btnGpsMiniMap");
+
   if (!btnToggle || !box) return;
 
   btnToggle.addEventListener("click", () => {
@@ -842,9 +1073,67 @@ function initMiniMapPicker() {
           state.miniMapMarker.setLatLng(ev.latlng);
           updateFormCoords(ev.latlng.lat, ev.latlng.lng);
         });
+      } else if (state.miniMap) {
+        state.miniMap.setView([state.activeCoords.lat, state.activeCoords.lng], 13);
+        state.miniMapMarker?.setLatLng([state.activeCoords.lat, state.activeCoords.lng]);
       }
       setTimeout(() => state.miniMap?.invalidateSize(), 200);
     }
+  });
+
+  const doMiniSearch = () => {
+    const val = searchInput?.value.trim();
+    if (!val) return;
+    if (!resolveCityLocation(val)) {
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=id&limit=1&q=${encodeURIComponent(val)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            const lat = Number(parseFloat(data[0].lat).toFixed(5));
+            const lon = Number(parseFloat(data[0].lon).toFixed(5));
+            updateFormCoords(lat, lon);
+            if (state.miniMap) {
+              state.miniMap.setView([lat, lon], 14);
+              state.miniMapMarker?.setLatLng([lat, lon]);
+            }
+            showToast(`Lokasi ditemukan: ${data[0].display_name.split(",")[0]}`);
+          } else {
+            showToast("Lokasi tidak ditemukan. Coba nama kota/daerah lain.");
+          }
+        })
+        .catch(() => showToast("Gagal mencari lokasi. Silakan geser pin pada peta."));
+    } else {
+      showToast(`Peta diarahkan ke wilayah ${val}`);
+    }
+  };
+
+  btnSearch?.addEventListener("click", doMiniSearch);
+  searchInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      doMiniSearch();
+    }
+  });
+
+  btnGps?.addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      showToast("Browser tidak mendukung GPS.");
+      return;
+    }
+    showToast("Mendeteksi koordinat GPS...");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = Number(pos.coords.latitude.toFixed(5));
+        const lng = Number(pos.coords.longitude.toFixed(5));
+        updateFormCoords(lat, lng);
+        if (state.miniMap) {
+          state.miniMap.setView([lat, lng], 15);
+          state.miniMapMarker?.setLatLng([lat, lng]);
+        }
+        showToast("GPS berhasil disinkronkan!");
+      },
+      () => showToast("Izin GPS tidak aktif atau lemah.")
+    );
   });
 }
 
@@ -859,7 +1148,7 @@ function initFullLeafletMap() {
   const mapEl = document.getElementById("fullMapLeaflet");
   if (!mapEl || typeof L === "undefined") return;
 
-  state.fullMap = L.map("fullMapLeaflet").setView([state.activeCoords.lat, state.activeCoords.lng], 13);
+  state.fullMap = L.map("fullMapLeaflet").setView([state.activeCoords.lat, state.activeCoords.lng], 12);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 18,
@@ -887,7 +1176,29 @@ function renderFullMapMarkers() {
     return matchStatus && matchCat;
   });
 
+  const usedCoords = {};
+  const latLngs = [];
+
   list.forEach(item => {
+    let lat = Number(item.lat);
+    let lng = Number(item.lng);
+    if (!lat || !lng) return;
+
+    // Jitter/spiral offset if multiple pins have the exact same coordinates
+    const coordKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
+    if (usedCoords[coordKey]) {
+      const step = usedCoords[coordKey];
+      const angle = step * (Math.PI / 3);
+      const radius = 0.003 * Math.ceil(step / 6);
+      lat += Math.sin(angle) * radius;
+      lng += Math.cos(angle) * radius;
+      usedCoords[coordKey]++;
+    } else {
+      usedCoords[coordKey] = 1;
+    }
+
+    latLngs.push([lat, lng]);
+
     let pinColor = "#f59e0b";
     if (item.status === "Diproses") pinColor = "#0284c7";
     if (item.status === "Selesai") pinColor = "#059669";
@@ -895,127 +1206,112 @@ function renderFullMapMarkers() {
 
     const customIcon = L.divIcon({
       className: "lapor-pin",
-      html: `<div style="background-color:${pinColor}; width:18px; height:18px; border-radius:50%; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.4);"></div>`,
-      iconSize: [18, 18],
-      iconAnchor: [9, 9]
+      html: `<div style="background-color:${pinColor}; width:20px; height:20px; border-radius:50%; border:2.5px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.45);"></div>`,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
     });
 
-    const marker = L.marker([item.lat, item.lng], { icon: customIcon }).addTo(state.fullMap);
+    const isAnon = item.isAnonymous || item.reporterName === "Anonim";
+    const authorName = escapeHtml(item.reporterName || (isAnon ? "Anonim" : "Warga SIMPEL"));
+
+    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(state.fullMap);
     marker.bindPopup(`
-      <div style="font-family:'Plus Jakarta Sans',sans-serif; min-width:200px;">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif; min-width:220px; padding:3px;">
         <span style="font-size:10px; font-weight:800; color:#c1121f;">${escapeHtml(item.type)} - ${escapeHtml(item.id)}</span>
-        <h4 style="font-size:13px; font-weight:800; margin:3px 0;">${escapeHtml(item.title)}</h4>
-        <p style="font-size:11px; color:#64748b; margin-bottom:6px;">${escapeHtml(item.address)} (${escapeHtml(item.district)})</p>
-        <div style="font-size:11px; margin-bottom:8px;">Status: <strong>${escapeHtml(item.status)}</strong></div>
-        <button type="button" style="background:#c1121f; color:white; border:none; padding:4px 8px; font-size:11px; font-weight:700; border-radius:3px; cursor:pointer;" onclick="window.trackTicketDirect('${item.id}')">
-          Lacak Tiket Ini
+        <h4 style="font-size:13px; font-weight:800; margin:3px 0 4px;">${escapeHtml(item.title)}</h4>
+        <p style="font-size:11px; color:#475569; margin-bottom:4px;">Pelapor: <strong>${authorName}</strong></p>
+        <p style="font-size:11px; color:#64748b; margin-bottom:6px;">Lokasi: ${escapeHtml(item.address)} (${escapeHtml(item.district)})</p>
+        <div style="font-size:11px; margin-bottom:8px;">Status: <span class="status-tag ${getStatusClass(item.status)}" style="padding:2px 6px; font-size:10px;">${escapeHtml(item.status)}</span></div>
+        <button type="button" style="background:#c1121f; color:white; border:none; padding:6px 10px; font-size:11px; font-weight:700; border-radius:4px; cursor:pointer; width:100%;" onclick="window.openReportDetailModal('${item.id}')">
+          Lihat Detail Aduan &rarr;
         </button>
       </div>
     `);
 
     state.fullMapMarkers.push(marker);
   });
+
+  // Otomatis pusatkan seluruh titik di layar agar Bandung, Surabaya, dll. langsung terlihat
+  if (latLngs.length > 0) {
+    const bounds = L.latLngBounds(latLngs);
+    state.fullMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+  }
 }
 
-window.trackTicketDirect = function(ticketId) {
-  switchTab("tabLacak");
-  const input = document.getElementById("inputKodeTiket");
-  if (input) {
-    input.value = ticketId;
-    doSearchTicket(ticketId);
-  }
+window.trackTicketDirect = function (ticketId) {
+  window.openReportDetailModal(ticketId);
 };
 
-// 7. Pelacakan Tiket
-function initTicketSearch() {
-  const btn = document.getElementById("btnCariTiket");
-  const input = document.getElementById("inputKodeTiket");
+// 7. Modal Detail Laporan Masyarakat
+window.openReportDetailModal = function (id) {
+  const report = state.reports.find(r => r.id === id);
+  if (!report) return;
 
-  btn.addEventListener("click", () => doSearchTicket(input.value.trim()));
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") doSearchTicket(input.value.trim());
-  });
-}
+  const modal = document.getElementById("modalReportDetail");
+  const body = document.getElementById("modalReportDetailBody");
+  if (!modal || !body) return;
 
-function doSearchTicket(code) {
-  const emptyBox = document.getElementById("trackEmptyNotice");
-  const detailBox = document.getElementById("trackDetailContainer");
+  const isAnon = report.isAnonymous || report.reporterName === "Anonim";
+  const authorName = escapeHtml(report.reporterName || (isAnon ? "Anonim" : "Warga SIMPEL"));
 
-  if (!code) {
-    emptyBox.classList.remove("hidden");
-    detailBox.classList.add("hidden");
-    showToast("Masukkan nomor tiket aduan.");
-    return;
-  }
-
-  const report = state.reports.find(r => r.id.toLowerCase() === code.toLowerCase());
-
-  if (!report) {
-    emptyBox.classList.remove("hidden");
-    emptyBox.innerHTML = `
-      <h4 class="empty-title">Tiket "${escapeHtml(code)}" Tidak Ditemukan</h4>
-      <p class="empty-desc">Pastikan nomor tiket sudah sesuai dengan format LAP-2026-XXXX.</p>
-    `;
-    detailBox.classList.add("hidden");
-    return;
-  }
-
-  emptyBox.classList.add("hidden");
-  detailBox.classList.remove("hidden");
-
-  let step2Active = report.status === "Diproses" || report.status === "Selesai";
-  let step3Active = report.status === "Diproses" || report.status === "Selesai";
-  let step4Active = report.status === "Selesai";
-
-  detailBox.innerHTML = `
-    <div class="ticket-head-bar">
-      <div>
-        <span class="ticket-reg-code">${escapeHtml(report.id)}</span>
-        <h3 style="font-size:1.125rem; font-weight:800; margin-top:2px;">${escapeHtml(report.title)}</h3>
-        <p style="font-size:0.8125rem; color:var(--text-muted);">${escapeHtml(report.address)} (${escapeHtml(report.district)})</p>
-      </div>
-      <div>
+  body.innerHTML = `
+    <div class="detail-modal-grid">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+        <span style="font-size:12px; font-weight:800; color:#c1121f;">${escapeHtml(report.type)} - ${escapeHtml(report.id)}</span>
         <span class="status-tag ${getStatusClass(report.status)}">${escapeHtml(report.status)}</span>
       </div>
-    </div>
 
-    <!-- 4 Stepper Alur -->
-    <div class="stepper-flow">
-      <div class="stepper-step active">
-        <span class="step-num-badge">Langkah 1</span>
-        <span class="step-label">Tulis Laporan</span>
-        <span class="step-time">${report.date}</span>
-      </div>
-      <div class="stepper-step ${step2Active ? 'active' : ''}">
-        <span class="step-num-badge">Langkah 2</span>
-        <span class="step-label">Proses Verifikasi</span>
-        <span class="step-time">${step2Active ? 'Selesai diverifikasi' : 'Menunggu antrean'}</span>
-      </div>
-      <div class="stepper-step ${step3Active ? 'active' : ''}">
-        <span class="step-num-badge">Langkah 3</span>
-        <span class="step-label">Tindak Lanjut</span>
-        <span class="step-time">${step3Active ? 'Regu lapangan bertindak' : 'Proses penjadwalan'}</span>
-      </div>
-      <div class="stepper-step ${step4Active ? 'active' : ''}">
-        <span class="step-num-badge">Langkah 4</span>
-        <span class="step-label">Selesai Ditangani</span>
-        <span class="step-time">${step4Active ? 'Tuntas' : 'Dalam pengerjaan'}</span>
-      </div>
-    </div>
+      <h3 style="font-size:1.15rem; font-weight:800; margin:0; color:#0f172a;">${escapeHtml(report.title)}</h3>
 
-    <!-- Catatan Resmi Petugas -->
-    <div class="officer-note-card">
-      <div class="officer-note-header">Tindak Lanjut Resmi Instansi: ${escapeHtml(report.agency)}</div>
-      <p style="font-size:0.875rem; color:var(--text-title);">${escapeHtml(report.officerNote || 'Menunggu tanggapan dari petugas.')}</p>
-    </div>
+      <div class="detail-info-card">
+        <div class="detail-info-row">
+          <span class="detail-info-label">Nama Pengirim</span>
+          <span class="detail-info-val" style="display:inline-flex; align-items:center; gap:0.35rem;">
+            ${authorName}
+            ${isAnon ? '<span class="badge-anonim">Anonim</span>' : '<span class="badge-verified-citizen">Terverifikasi</span>'}
+          </span>
+        </div>
+        <div class="detail-info-row">
+          <span class="detail-info-label">Wilayah / Kota</span>
+          <span class="detail-info-val">${escapeHtml(report.district)}</span>
+        </div>
+        <div class="detail-info-row">
+          <span class="detail-info-label">Alamat / Lokasi</span>
+          <span class="detail-info-val">${escapeHtml(report.address)}</span>
+        </div>
+        <div class="detail-info-row">
+          <span class="detail-info-label">Tanggal Kejadian</span>
+          <span class="detail-info-val">${report.date}</span>
+        </div>
+        <div class="detail-info-row">
+          <span class="detail-info-label">Kategori</span>
+          <span class="detail-info-val">${escapeHtml(report.category)}</span>
+        </div>
+        <div class="detail-info-row">
+          <span class="detail-info-label">Instansi Berwenang</span>
+          <span class="detail-info-val">${escapeHtml(report.agency)}</span>
+        </div>
+      </div>
 
-    <!-- Bukti Foto -->
-    <div>
-      <h4 style="font-size:0.875rem; font-weight:800; margin-bottom:0.375rem;">Lampiran Bukti Lapangan:</h4>
-      <img src="${report.photoUrl}" alt="Bukti aduan" style="max-height:220px; border-radius:var(--radius-sm); border:1px solid var(--border-medium);">
+      <div>
+        <h4 style="font-size:0.875rem; font-weight:800; margin-bottom:0.35rem; color:#0f172a;">Deskripsi Aduan / Aspirasi:</h4>
+        <p style="font-size:0.85rem; color:#334155; line-height:1.5; background:#f8fafc; padding:0.75rem; border-radius:6px; border:1px solid #e2e8f0;">${escapeHtml(report.description)}</p>
+      </div>
+
+      <div class="detail-officer-box">
+        <div class="detail-officer-title">Respon &amp; Tindak Lanjut Petugas:</div>
+        <p class="detail-officer-text">${escapeHtml(report.officerNote || 'Laporan telah diterima dalam sistem dan sedang dalam antrean verifikasi petugas dinas terkait.')}</p>
+      </div>
+
+      <div>
+        <h4 style="font-size:0.875rem; font-weight:800; margin-bottom:0.35rem; color:#0f172a;">Bukti Foto Lapangan:</h4>
+        <img src="${report.photoUrl}" alt="Bukti aduan" style="max-height:220px; width:100%; object-fit:contain; background:#0f172a; border-radius:6px; border:1px solid #cbd5e1;">
+      </div>
     </div>
   `;
-}
+
+  modal.classList.remove("hidden");
+};
 
 // 8. Statistik & Rekapitulasi (Screenshot 3)
 function renderStatistics() {
@@ -1037,7 +1333,7 @@ function renderStatistics() {
       <div style="display:flex; align-items:center; gap:1.5rem;">
         <svg width="120" height="120" viewBox="0 0 36 36">
           <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" stroke-width="5"/>
-          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#c1121f" stroke-width="5" stroke-dasharray="${(typeCounts.PENGADUAN/total)*100}, 100"/>
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#c1121f" stroke-width="5" stroke-dasharray="${(typeCounts.PENGADUAN / total) * 100}, 100"/>
         </svg>
         <div style="font-size:12px; display:flex; flex-direction:column; gap:4px;">
           <div><strong style="color:#c1121f;">Pengaduan:</strong> ${typeCounts.PENGADUAN} laporan</div>
@@ -1058,7 +1354,7 @@ function renderStatistics() {
       <div style="display:flex; align-items:center; gap:1.5rem;">
         <svg width="120" height="120" viewBox="0 0 36 36">
           <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" stroke-width="5"/>
-          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#059669" stroke-width="5" stroke-dasharray="${(completed/total)*100}, 100"/>
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#059669" stroke-width="5" stroke-dasharray="${(completed / total) * 100}, 100"/>
         </svg>
         <div style="font-size:12px; display:flex; flex-direction:column; gap:4px;">
           <div><strong style="color:#f59e0b;">Menunggu:</strong> ${pendingCount} aduan</div>
@@ -1119,9 +1415,13 @@ function renderPublicFeed() {
   const container = document.getElementById("homeRecentReports");
   if (!container) return;
 
-  const topRecent = state.reports.slice(0, 6);
-  container.innerHTML = topRecent.map(item => `
-    <article class="lapor-card-feed" tabindex="0">
+  const topRecent = state.reports.slice(0, 9);
+  container.innerHTML = topRecent.map(item => {
+    const isAnon = item.isAnonymous || item.reporterName === "Anonim";
+    const authorName = escapeHtml(item.reporterName || (isAnon ? "Anonim" : "Warga SIMPEL"));
+
+    return `
+    <article class="lapor-card-feed" tabindex="0" onclick="window.openReportDetailModal('${item.id}')" title="Klik untuk melihat transparansi proses aduan ini">
       <img src="${item.photoUrl}" alt="Bukti aduan" class="feed-thumb">
       <div class="feed-content">
         <div class="feed-meta-row">
@@ -1130,13 +1430,23 @@ function renderPublicFeed() {
         </div>
         <h4 class="feed-title">${escapeHtml(item.title)}</h4>
         <p class="feed-text">${escapeHtml(item.description)}</p>
+
+        <div class="feed-author-row">
+          <div class="feed-author-user">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Pelapor: <strong>${authorName}</strong></span>
+          </div>
+          ${isAnon ? '<span class="badge-anonim">Anonim</span>' : '<span class="badge-verified-citizen">Terverifikasi</span>'}
+        </div>
+
         <div class="feed-footer">
           <span>${escapeHtml(item.district)}</span>
           <span>${item.date}</span>
         </div>
       </div>
     </article>
-  `).join("");
+    `;
+  }).join("");
 }
 
 // 10. Meja Kerja Admin & Petugas Kota
@@ -1185,8 +1495,8 @@ function renderAdminTable() {
   const filtered = state.reports.filter(r => {
     const matchStatus = activePill === "ALL" || r.status === activePill;
     const matchSearch = r.id.toLowerCase().includes(query) ||
-                        r.title.toLowerCase().includes(query) ||
-                        r.district.toLowerCase().includes(query);
+      r.title.toLowerCase().includes(query) ||
+      r.district.toLowerCase().includes(query);
     return matchStatus && matchSearch;
   });
 
@@ -1207,7 +1517,7 @@ function renderAdminTable() {
   `).join("");
 }
 
-window.openActionModal = function(id) {
+window.openActionModal = function (id) {
   const report = state.reports.find(r => r.id === id);
   if (!report) return;
 
@@ -1248,11 +1558,11 @@ window.openActionModal = function(id) {
   modal.classList.remove("hidden");
 };
 
-window.closeActionModal = function() {
+window.closeActionModal = function () {
   document.getElementById("modalActionPetugas")?.classList.add("hidden");
 };
 
-window.saveActionModal = function(id) {
+window.saveActionModal = function (id) {
   const status = document.getElementById("modalNewStatus").value;
   const note = document.getElementById("modalOfficerNote").value.trim();
 
@@ -1274,6 +1584,9 @@ function initModals() {
   document.getElementById("btnCloseModalAction")?.addEventListener("click", window.closeActionModal);
   document.getElementById("btnCloseSuccessModal")?.addEventListener("click", closeSuccessModal);
   document.getElementById("btnDoneSubmitModal")?.addEventListener("click", closeSuccessModal);
+  document.getElementById("btnCloseReportDetail")?.addEventListener("click", () => {
+    document.getElementById("modalReportDetail")?.classList.add("hidden");
+  });
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
@@ -1288,7 +1601,7 @@ function initModals() {
   });
 }
 
-window.openPanduanModal = function() {
+window.openPanduanModal = function () {
   document.getElementById("modalPanduan")?.classList.remove("hidden");
 };
 
@@ -1304,10 +1617,16 @@ function openSuccessModal(ticketCode) {
   codeEl.textContent = ticketCode;
   modal.classList.remove("hidden");
 
-  document.getElementById("btnTrackSubmittedTicket").onclick = () => {
-    modal.classList.add("hidden");
-    window.trackTicketDirect(ticketCode);
-  };
+  const btnView = document.getElementById("btnViewRecentReports") || document.getElementById("btnTrackSubmittedTicket");
+  if (btnView) {
+    btnView.onclick = () => {
+      modal.classList.add("hidden");
+      switchTab("tabBeranda");
+      setTimeout(() => {
+        document.getElementById("homeRecentReportsSection")?.scrollIntoView({ behavior: "smooth" });
+      }, 250);
+    };
+  }
 }
 
 function closeSuccessModal() {
