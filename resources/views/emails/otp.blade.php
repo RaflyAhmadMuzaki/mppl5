@@ -211,7 +211,7 @@
 
             {{-- Kotak kode OTP --}}
             <div class="otp-container">
-                <p class="otp-label">✉ Kode OTP Anda</p>
+                <p class="otp-label">Kode OTP Anda</p>
                 <div class="otp-code">{{ $otpCode }}</div>
                 <p class="otp-expiry">
                     Kode ini berlaku selama <strong>5 menit</strong> sejak email diterima.
@@ -221,7 +221,7 @@
             {{-- Peringatan keamanan --}}
             <div class="info-box">
                 <p>
-                    ⚠️ <strong>Jangan bagikan kode ini kepada siapapun</strong>, termasuk
+                    <strong>PENTING: Jangan bagikan kode ini kepada siapapun</strong>, termasuk
                     petugas SIMPEL. Tim kami tidak akan pernah meminta kode OTP Anda melalui
                     telepon, SMS, atau chat.
                 </p>

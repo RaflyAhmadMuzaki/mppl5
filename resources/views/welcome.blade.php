@@ -57,6 +57,7 @@
       <!-- Menu Navigasi Desktop -->
       <nav class="nav-menu" id="mainNavMenu" aria-label="Menu Utama">
         <button type="button" class="nav-link active" data-tab="tabBeranda">BERANDA</button>
+        <button type="button" class="nav-link" id="navLinkLaporanTerkini" onclick="window.goToPublicFeed()">LAPORAN TERKINI</button>
         <button type="button" class="nav-link" data-tab="tabPeta">PETA SEBARAN</button>
         <button type="button" class="nav-link" data-tab="tabStatistik">STATISTIK</button>
         <button type="button" class="nav-link" data-tab="tabTentang">TENTANG SIMPEL</button>
@@ -115,6 +116,17 @@
           <polyline points="9 22 9 12 15 12 15 22"></polyline>
         </svg>
         <span>Beranda</span>
+      </button>
+
+      <button type="button" class="citizen-side-btn" id="drawerLinkLaporanTerkini" onclick="window.goToPublicFeed()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <span>Laporan Masuk Terkini</span>
       </button>
 
       <button type="button" class="citizen-side-btn" data-tab="tabPeta">
@@ -501,7 +513,7 @@
       </section>
 
       <!-- Umpan Aduan Publik Terkini -->
-      <section class="public-feed-section">
+      <section class="public-feed-section" id="publicFeedSection">
         <div class="section-title-wrap">
           <h3 class="section-title">Laporan Masuk Terkini</h3>
           <p class="section-desc">Transparansi publik tindak lanjut laporan lingkungan masyarakat.</p>
@@ -644,12 +656,16 @@
 
           <div class="tentang-vision-mission-grid">
             <div class="vm-card">
-              <div class="vm-icon">🎯</div>
+              <div class="vm-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              </div>
               <h4>Visi SIMPEL</h4>
               <p>Mewujudkan tata kelola lingkungan perkotaan yang bersih, sehat, berkelanjutan, dan tanggap krisis berbasis partisipasi inklusif seluruh lapisan masyarakat.</p>
             </div>
             <div class="vm-card">
-              <div class="vm-icon">⚡</div>
+              <div class="vm-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
               <h4>Misi SIMPEL</h4>
               <p>Menyediakan sarana aduan yang cepat dan akurat, mempercepat respon tim lapangan lintas instansi, serta menyajikan data analitik lingkungan yang transparan untuk kebijakan publik.</p>
             </div>
@@ -752,7 +768,7 @@
       <div class="modal-top">
         <h3 id="modalSuccessTitle" class="modal-title-text">Laporan Berhasil Terkirim</h3>
         <button type="button" class="modal-close-icon" id="btnCloseSuccessModal"
-          aria-label="Tutup dialog">&times;</button>
+          onclick="window.closeSuccessModal()" aria-label="Tutup dialog">&times;</button>
       </div>
       <div class="modal-content-area text-center">
         <div class="success-check-badge" aria-hidden="true">
@@ -764,8 +780,8 @@
         <div class="ticket-big-box" id="successTicketCode">LAP-2026-0000</div>
         <p class="success-caption" id="successSenderCaption">Laporan Anda kini tampil pada <strong>Laporan Masuk Terkini</strong> dan segera diverifikasi petugas dinas.</p>
         <div class="success-modal-buttons">
-          <button type="button" class="btn-lapor-submit full-width" id="btnViewRecentReports">Lihat di Laporan Masuk Terkini &rarr;</button>
-          <button type="button" class="btn-outline-red full-width" id="btnDoneSubmitModal">Tutup</button>
+          <button type="button" class="btn-lapor-submit full-width" id="btnViewRecentReports" onclick="window.goToPublicFeed()">Lihat di Laporan Masuk Terkini &rarr;</button>
+          <button type="button" class="btn-outline-red full-width" id="btnDoneSubmitModal" onclick="window.closeSuccessModal()">Tutup</button>
         </div>
       </div>
     </div>
@@ -830,7 +846,7 @@
                 </button>
               </div>
               <p class="auth-helper-note" style="margin-top:12px;font-size:12px;color:#64748b;text-align:center;">
-                ✨ Akun baru otomatis terdaftar setelah verifikasi kode OTP berhasil.
+                Akun baru otomatis terdaftar setelah verifikasi kode OTP berhasil.
               </p>
             </form>
           </div>
@@ -974,6 +990,8 @@
       </div>
       <nav class="footer-links-row" aria-label="Tautan Bawah">
         <button type="button" class="footer-link-btn" onclick="window.switchTab('tabBeranda')">BERANDA</button>
+        <button type="button" class="footer-link-btn" onclick="window.goToPublicFeed()">LAPORAN TERKINI</button>
+        <button type="button" class="footer-link-btn" onclick="window.switchTab('tabPeta')">PETA SEBARAN</button>
         <button type="button" class="footer-link-btn" onclick="window.switchTab('tabTentang')">TENTANG KAMI</button>
         <button type="button" class="footer-link-btn" onclick="window.switchTab('tabStatistik')">STATISTIK</button>
         <button type="button" class="footer-link-btn" onclick="window.openPanduanModal()">PANDUAN LAPORAN</button>

@@ -13,15 +13,15 @@ const SEED_DATA = [
     category: "Sampah",
     district: "Sukajadi",
     agency: "Dinas Lingkungan Hidup Kota",
-    address: "Jl. Merdeka No. 10, RT 04 / RW 02",
-    lat: -7.2575,
-    lng: 112.7521,
+    address: "Jl. Merdeka No. 10, RT 04 / RW 02, Bandung",
+    lat: -6.8858,
+    lng: 107.5932,
     status: "Menunggu Verifikasi",
     reporterName: "Budi Santoso",
     isAnonymous: false,
     isSecret: false,
     officerNote: "Menunggu penugasan regu pengangkut sampah dinas wilayah Sukajadi.",
-    photoUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%23334155'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23f1f5f9' text-anchor='middle'>Bukti Aduan Sampah</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%2394a3b8' text-anchor='middle'>Lokasi: Jl. Merdeka No. 10</text></svg>"
+    photoUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%23334155'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23f1f5f9' text-anchor='middle'>Bukti Aduan Sampah</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%2394a3b8' text-anchor='middle'>Lokasi: Jl. Merdeka, Sukajadi Bandung</text></svg>"
   },
   {
     id: "LAP-2026-0129",
@@ -30,17 +30,17 @@ const SEED_DATA = [
     description: "Aliran air sungai berubah warna keruh kehitaman dan mengeluarkan aroma menyengat, diduga limbah industri kecil.",
     date: "2026-10-09",
     category: "Polusi Air",
-    district: "Menteng",
+    district: "Wonokromo",
     agency: "Dinas Lingkungan Hidup Kota",
-    address: "Bantaran Sungai Ciliwung, Jembatan Timur",
-    lat: -7.2625,
-    lng: 112.7480,
+    address: "Bantaran Kali Surabaya, Jembatan Wonokromo",
+    lat: -7.3012,
+    lng: 112.7378,
     status: "Diproses",
     reporterName: "Siti Rahmawati",
     isAnonymous: false,
     isSecret: false,
     officerNote: "Tim laboratorium lingkungan dinas telah mengambil sampel air untuk uji baku mutu laboratorium.",
-    photoUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%230f172a'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%2338bdf8' text-anchor='middle'>Bukti Pencemaran Air</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%2394a3b8' text-anchor='middle'>Lokasi: Sungai Ciliwung</text></svg>"
+    photoUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%230f172a'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%2338bdf8' text-anchor='middle'>Bukti Pencemaran Air</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%2394a3b8' text-anchor='middle'>Lokasi: Kali Wonokromo Surabaya</text></svg>"
   },
   {
     id: "LAP-2026-0130",
@@ -49,11 +49,11 @@ const SEED_DATA = [
     description: "Pagar pembatas area bermain anak patah dan bangku taman rusak akibat tertimpa dahan pohon lapuk.",
     date: "2026-10-08",
     category: "Ruang Terbuka",
-    district: "Wonokromo",
+    district: "Menteng",
     agency: "Dinas Kebersihan & Ruang Terbuka Hijau",
-    address: "Taman Bungkul Sisi Barat",
-    lat: -7.2915,
-    lng: 112.7390,
+    address: "Taman Menteng, Jakarta Pusat",
+    lat: -6.1969,
+    lng: 106.8361,
     status: "Selesai",
     reporterName: "Anonim",
     isAnonymous: true,
@@ -71,17 +71,77 @@ const SEED_DATA = [
     category: "Polusi Udara",
     district: "Cibiru",
     agency: "Satuan Polisi Pamong Praja",
-    address: "Kawasan Industri Pergudangan Blok C",
-    lat: -7.2450,
-    lng: 112.7650,
+    address: "Kawasan Industri Pergudangan Blok C, Cibiru Bandung",
+    lat: -6.9248,
+    lng: 107.7167,
     status: "Diproses",
     reporterName: "Anonim",
     isAnonymous: true,
     isSecret: true,
     officerNote: "Satpol PP dan petugas dinas mendatangi lokasi dan memberikan sanksi peringatan.",
-    photoUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%233f3f46'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23fbbf24' text-anchor='middle'>Bukti Polusi Asap</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%23f4f4f5' text-anchor='middle'>Lokasi: Blok C Pergudangan</text></svg>"
+    photoUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='260' viewBox='0 0 400 260'><rect width='400' height='260' fill='%233f3f46'/><text x='200' y='120' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23fbbf24' text-anchor='middle'>Bukti Polusi Asap</text><text x='200' y='150' font-family='sans-serif' font-size='12' fill='%23f4f4f5' text-anchor='middle'>Lokasi: Blok C Cibiru Bandung</text></svg>"
   }
 ];
+
+const INDONESIA_CITY_COORDS = {
+  // Bandung & Jawa Barat
+  "bandung": [-6.9175, 107.6191],
+  "sukajadi": [-6.8858, 107.5932],
+  "cibiru": [-6.9248, 107.7167],
+  "coblong": [-6.8841, 107.6139],
+  "dago": [-6.8778, 107.6167],
+  "buahbatu": [-6.9535, 107.6441],
+  "lengkong": [-6.9324, 107.6208],
+  "astanaanyar": [-6.9348, 107.6015],
+  "regol": [-6.9351, 107.6083],
+  "cicendo": [-6.9038, 107.5935],
+  "andir": [-6.9122, 107.5815],
+  "kiaracondong": [-6.9262, 107.6475],
+  "antapani": [-6.9161, 107.6596],
+  "arcamanik": [-6.9178, 107.6789],
+  "ujungberung": [-6.9118, 107.7012],
+  "gedebage": [-6.9542, 107.6897],
+  "cibeunying": [-6.8996, 107.6325],
+  "batununggal": [-6.9452, 107.6305],
+  "cimahi": [-6.8722, 107.5420],
+  "sumedang": [-6.8584, 107.9266],
+  "jatinangor": [-6.9304, 107.7735],
+  "garut": [-7.2278, 107.9087],
+  "tasikmalaya": [-7.3274, 108.2207],
+  "cirebon": [-6.7320, 108.5523],
+  "bogor": [-6.5971, 106.8060],
+  "bekasi": [-6.2383, 106.9756],
+  "depok": [-6.4025, 106.7942],
+  "tangerang": [-6.1783, 106.6319],
+  // DKI Jakarta
+  "jakarta": [-6.2088, 106.8456],
+  "menteng": [-6.1969, 106.8361],
+  "gambir": [-6.1754, 106.8272],
+  "kemayoran": [-6.1604, 106.8542],
+  "senayan": [-6.2235, 106.7997],
+  "kebayoran": [-6.2443, 106.7928],
+  "tebet": [-6.2335, 106.8528],
+  // Surabaya & Jatim
+  "surabaya": [-7.2575, 112.7521],
+  "wonokromo": [-7.3012, 112.7378],
+  "gubeng": [-7.2736, 112.7547],
+  "tegalsari": [-7.2694, 112.7388],
+  "genteng": [-7.2592, 112.7483],
+  "rungkut": [-7.3255, 112.7842],
+  "sukolilo": [-7.2882, 112.7933],
+  "malang": [-7.9666, 112.6326],
+  "sidoarjo": [-7.4478, 112.7183],
+  // Jawa Tengah & DIY
+  "semarang": [-6.9667, 110.4167],
+  "yogyakarta": [-7.7956, 110.3695],
+  "jogja": [-7.7956, 110.3695],
+  "solo": [-7.5755, 110.8243],
+  // Luar Jawa
+  "medan": [3.5952, 98.6722],
+  "makassar": [-5.1477, 119.4327],
+  "denpasar": [-8.6705, 115.2126],
+  "bali": [-8.4095, 115.1889]
+};
 
 class AdminState {
   constructor() {
@@ -157,15 +217,12 @@ class AdminState {
       const isDefaultSurabaya = Math.abs(r.lat - (-7.2575)) < 0.05 && Math.abs(r.lng - 112.7521) < 0.05;
 
       if (isDefaultSurabaya) {
-        if (locText.includes("bandung")) {
-          r.lat = Number((-6.9175 + (Math.sin(i + 1) * 0.012)).toFixed(5));
-          r.lng = Number((107.6191 + (Math.cos(i + 1) * 0.012)).toFixed(5));
-        } else if (locText.includes("sumedang")) {
-          r.lat = Number((-6.8584 + (Math.sin(i + 1) * 0.012)).toFixed(5));
-          r.lng = Number((107.9266 + (Math.cos(i + 1) * 0.012)).toFixed(5));
-        } else if (locText.includes("jakarta")) {
-          r.lat = Number((-6.2088 + (Math.sin(i + 1) * 0.012)).toFixed(5));
-          r.lng = Number((106.8456 + (Math.cos(i + 1) * 0.012)).toFixed(5));
+        for (const [key, coords] of Object.entries(INDONESIA_CITY_COORDS)) {
+          if (locText.includes(key)) {
+            r.lat = Number((coords[0] + (Math.sin(i + 1) * 0.008)).toFixed(5));
+            r.lng = Number((coords[1] + (Math.cos(i + 1) * 0.008)).toFixed(5));
+            break;
+          }
         }
       }
       return r;
@@ -221,7 +278,6 @@ const adminState = new AdminState();
 document.addEventListener("DOMContentLoaded", () => {
   initAdminNavigation();
   initAdminTable();
-  initAdminMap();
   initAdminStatistics();
   initAdminModals();
   initAdminLogout();
@@ -275,16 +331,13 @@ function initAdminNavigation() {
       // Invalidate peta jika beralih ke tab peta
       if (targetId === "tabAdminPeta") {
         setTimeout(() => {
-          if (!adminState.adminMap) {
+          if (!adminState.adminMap && typeof L !== "undefined") {
             initAdminMap();
-          } else {
+          } else if (adminState.adminMap) {
             adminState.adminMap.invalidateSize(true);
             renderAdminMapMarkers();
           }
         }, 150);
-        setTimeout(() => {
-          adminState.adminMap?.invalidateSize(true);
-        }, 400);
       }
       if (targetId === "tabAdminStatistik") {
         renderAdminStatistics();
@@ -489,7 +542,7 @@ function initAdminMap() {
   adminState.adminMap = L.map("adminLeafletMap", {
     zoomControl: true,
     scrollWheelZoom: true
-  }).setView([-7.2575, 112.7521], 12);
+  }).setView([-6.9175, 107.6191], 11);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
@@ -507,16 +560,20 @@ function initAdminMap() {
   setTimeout(() => {
     adminState.adminMap?.invalidateSize(true);
     fitAdminMapBounds();
-  }, 300);
+  }, 200);
 }
 
 function fitAdminMapBounds() {
   if (!adminState.adminMap) return;
+  const mapEl = document.getElementById("adminLeafletMap");
+  if (!mapEl || mapEl.offsetWidth === 0 || mapEl.offsetHeight === 0) return;
+
   const validLatLngs = [];
   adminState.reports.forEach(r => {
     if (r.lat && r.lng) validLatLngs.push([Number(r.lat), Number(r.lng)]);
   });
   if (validLatLngs.length > 0) {
+    adminState.adminMap.invalidateSize(true);
     const bounds = L.latLngBounds(validLatLngs);
     adminState.adminMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
   }
@@ -589,7 +646,9 @@ function renderAdminMapMarkers() {
     adminState.adminMapMarkers.push(marker);
   });
 
-  if (latLngs.length > 0) {
+  const mapEl = document.getElementById("adminLeafletMap");
+  if (latLngs.length > 0 && mapEl && mapEl.offsetWidth > 0 && mapEl.offsetHeight > 0) {
+    adminState.adminMap.invalidateSize(true);
     const bounds = L.latLngBounds(latLngs);
     adminState.adminMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
   }

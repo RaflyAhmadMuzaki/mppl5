@@ -629,7 +629,7 @@
               Periksa keabsahan bukti foto dan lokasi laporan warga, perbarui status pengerjaan, dan berikan catatan resmi petugas.
             </p>
             <div class="auto-purge-hint">
-              <span>⏱️ <strong>Sistem Retensi Otomatis:</strong> Laporan berstatus <strong>Selesai</strong> otomatis dihapus dalam waktu 24 jam.</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:-2px; margin-right:4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><strong>Sistem Retensi Otomatis:</strong> Laporan berstatus <strong>Selesai</strong> otomatis dihapus dalam waktu 24 jam.</span>
             </div>
           </div>
 
