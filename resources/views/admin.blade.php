@@ -13,9 +13,9 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap"
     rel="stylesheet">
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Main Style -->
   <link rel="stylesheet" href="styles.css">
@@ -746,12 +746,20 @@
             <p class="admin-sub">Pantau sebaran titik insiden aktif di seluruh wilayah dan kota (Bandung, Surabaya, Jakarta, dll.) untuk penugasan regu lapangan.</p>
           </div>
           <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-            <select id="filterAdminMapStatus" class="field-select" style="padding:0.45rem 0.75rem; font-size:0.82rem; border-radius:6px; border:1px solid #cbd5e1; background:white;">
+            <select id="filterAdminMapStatus" class="field-select select-sm" style="padding:0.45rem 0.75rem; font-size:0.82rem; border-radius:6px; border:1px solid #cbd5e1; background:white;">
               <option value="ALL">Semua Status</option>
               <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
               <option value="Diproses">Sedang Diproses</option>
               <option value="Selesai">Selesai Ditangani</option>
               <option value="Ditolak">Ditolak</option>
+            </select>
+            <select id="filterAdminMapCategory" class="field-select select-sm" style="padding:0.45rem 0.75rem; font-size:0.82rem; border-radius:6px; border:1px solid #cbd5e1; background:white;">
+              <option value="ALL">Semua Kategori</option>
+              <option value="Sampah">Sampah</option>
+              <option value="Polusi Air">Limbah Air</option>
+              <option value="Polusi Udara">Polusi Udara</option>
+              <option value="Ruang Terbuka">Ruang Terbuka</option>
+              <option value="Drainase">Drainase</option>
             </select>
             <button type="button" id="btnAdminMapResetBounds" class="btn-refresh" title="Pusatkan Seluruh Titik Peta" style="padding:0.45rem 0.85rem; font-size:0.82rem; display:inline-flex; align-items:center; gap:0.35rem; background:white; border:1px solid #cbd5e1; border-radius:6px; cursor:pointer;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
@@ -760,7 +768,7 @@
           </div>
         </div>
 
-        <div id="adminLeafletMap" class="admin-full-map" style="height:580px; min-height:520px; width:100%; border-radius:8px; border:1px solid #cbd5e1; position:relative; background:#e2e8f0; z-index:1;"></div>
+        <div id="adminLeafletMap" class="full-map-container" style="height:550px; min-height:480px; width:100%; border-radius:8px; border:1px solid #cbd5e1; position:relative; overflow:hidden;"></div>
 
         <div class="map-legend-bar" style="display:flex; gap:1.25rem; flex-wrap:wrap; margin-top:0.875rem; font-size:0.8125rem; color:#475569;">
           <div class="legend-chip" style="display:inline-flex; align-items:center; gap:0.375rem;"><span style="width:10px; height:10px; border-radius:50%; background:#f59e0b; display:inline-block;"></span> Menunggu Verifikasi</div>
@@ -829,8 +837,7 @@
   <div id="laporToastContainer" class="toast-stack" aria-live="polite"></div>
 
   <!-- Leaflet Library -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- jsPDF & AutoTable for PDF Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

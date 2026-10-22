@@ -850,6 +850,8 @@ function updateAuthUI() {
 }
 
 window.switchTab = function (tabId) {
+  if (!tabId) tabId = "tabBeranda";
+
   if (tabId === "tabAdmin" && (!state.currentUser || (state.currentUser.role !== "officer" && state.currentUser.role !== "admin"))) {
     showToast("Akses Panel Petugas khusus untuk akun Petugas Kota. Silakan masuk sebagai petugas.");
     document.getElementById("modalLogin")?.classList.remove("hidden");
@@ -869,6 +871,10 @@ window.switchTab = function (tabId) {
   if (activeLink) activeLink.classList.add("active");
 
   window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (tabId === "tabLaporanTerkini" || tabId === "tabBeranda") {
+    renderPublicFeed();
+  }
 
   if (tabId === "tabPeta") {
     setTimeout(() => {
@@ -1357,6 +1363,12 @@ window.openReportDetailModal = function (id) {
         <h4 style="font-size:0.875rem; font-weight:800; margin-bottom:0.35rem; color:#0f172a;">Bukti Foto Lapangan:</h4>
         <img src="${report.photoUrl}" alt="Bukti aduan" style="max-height:220px; width:100%; object-fit:contain; background:#0f172a; border-radius:6px; border:1px solid #cbd5e1;">
       </div>
+
+      <div style="margin-top:1.25rem; display:flex; justify-content:flex-end;">
+        <button type="button" class="btn-outline-red full-width" onclick="window.closeReportDetailModal()" style="padding:0.75rem; font-weight:700; cursor:pointer;">
+          Tutup Detail Laporan
+        </button>
+      </div>
     </div>
   `;
 
@@ -1460,13 +1472,13 @@ function renderStatistics() {
   }
 }
 
-// 9. Umpan Laporan Publik di Beranda
+// 9. Umpan Laporan Publik di Beranda & Tab Laporan Terkini
 function renderPublicFeed() {
-  const container = document.getElementById("homeRecentReports");
-  if (!container) return;
+  const homeContainer = document.getElementById("homeRecentReports");
+  const tabContainer = document.getElementById("feedRecentReportsTab");
+  if (!homeContainer && !tabContainer) return;
 
-  const topRecent = state.reports.slice(0, 9);
-  container.innerHTML = topRecent.map(item => {
+  const buildFeedCard = (item) => {
     const isAnon = item.isAnonymous || item.reporterName === "Anonim";
     const authorName = escapeHtml(item.reporterName || (isAnon ? "Anonim" : "Warga SIMPEL"));
 
@@ -1496,7 +1508,24 @@ function renderPublicFeed() {
       </div>
     </article>
     `;
-  }).join("");
+  };
+
+  // Render Beranda (9 laporan terbaru)
+  if (homeContainer) {
+    const topRecent = state.reports.slice(0, 9);
+    homeContainer.innerHTML = topRecent.length > 0
+      ? topRecent.map(buildFeedCard).join("")
+      : '<p style="color:#64748b; font-size:0.9rem; padding:1.5rem 0;">Belum ada laporan masuk.</p>';
+  }
+
+  // Render Tab Laporan Masuk Terkini
+  if (tabContainer) {
+    const filterCat = document.getElementById("filterFeedCategoryTab")?.value || "ALL";
+    const filteredReports = state.reports.filter(r => filterCat === "ALL" || r.category === filterCat);
+    tabContainer.innerHTML = filteredReports.length > 0
+      ? filteredReports.map(buildFeedCard).join("")
+      : '<p style="color:#64748b; font-size:0.9rem; padding:2rem 0; text-align:center; grid-column:1/-1;">Belum ada laporan untuk kategori ini.</p>';
+  }
 }
 
 // 10. Meja Kerja Admin & Petugas Kota
@@ -1635,9 +1664,9 @@ function initModals() {
   document.getElementById("btnCloseSuccessModal")?.addEventListener("click", window.closeSuccessModal);
   document.getElementById("btnDoneSubmitModal")?.addEventListener("click", window.closeSuccessModal);
   document.getElementById("btnViewRecentReports")?.addEventListener("click", window.goToPublicFeed);
-  document.getElementById("btnCloseReportDetail")?.addEventListener("click", () => {
-    document.getElementById("modalReportDetail")?.classList.add("hidden");
-  });
+  document.getElementById("btnCloseReportDetail")?.addEventListener("click", window.closeReportDetailModal);
+
+  document.getElementById("filterFeedCategoryTab")?.addEventListener("change", renderPublicFeed);
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
@@ -1652,6 +1681,10 @@ function initModals() {
   });
 }
 
+window.closeReportDetailModal = function () {
+  document.getElementById("modalReportDetail")?.classList.add("hidden");
+};
+
 window.openPanduanModal = function () {
   document.getElementById("modalPanduan")?.classList.remove("hidden");
 };
@@ -1662,17 +1695,12 @@ function closePanduanModal() {
 
 window.goToPublicFeed = function () {
   window.closeSuccessModal();
+  window.closeReportDetailModal();
   document.getElementById("citizenMobileDrawer")?.classList.remove("open");
   document.getElementById("citizenDrawerBackdrop")?.classList.remove("active");
   document.body.style.overflow = "";
 
-  window.switchTab("tabBeranda");
-  setTimeout(() => {
-    const feed = document.getElementById("publicFeedSection") || document.getElementById("homeRecentReports");
-    if (feed) {
-      feed.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, 120);
+  window.switchTab("tabLaporanTerkini");
 };
 
 window.closeSuccessModal = function () {

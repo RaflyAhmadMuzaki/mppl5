@@ -331,13 +331,8 @@ function initAdminNavigation() {
       // Invalidate peta jika beralih ke tab peta
       if (targetId === "tabAdminPeta") {
         setTimeout(() => {
-          if (!adminState.adminMap && typeof L !== "undefined") {
-            initAdminMap();
-          } else if (adminState.adminMap) {
-            adminState.adminMap.invalidateSize(true);
-            renderAdminMapMarkers();
-          }
-        }, 150);
+          ensureAdminMapInitialized();
+        }, 120);
       }
       if (targetId === "tabAdminStatistik") {
         renderAdminStatistics();
@@ -528,7 +523,20 @@ function initAdminModals() {
   });
 }
 
-// 4. Peta Pantau Wilayah (GIS Monitoring Petugas)
+// 4. Peta Pantau Wilayah (GIS Monitoring Petugas - Identik dengan Peta Warga)
+function ensureAdminMapInitialized() {
+  if (typeof L === "undefined") {
+    setTimeout(ensureAdminMapInitialized, 150);
+    return;
+  }
+  if (!adminState.adminMap) {
+    initAdminMap();
+  } else {
+    adminState.adminMap.invalidateSize(true);
+    renderAdminMapMarkers();
+  }
+}
+
 function initAdminMap() {
   const mapEl = document.getElementById("adminLeafletMap");
   if (!mapEl || typeof L === "undefined") return;
@@ -539,17 +547,19 @@ function initAdminMap() {
     return;
   }
 
+  // Set default view Bandung (matches society view)
   adminState.adminMap = L.map("adminLeafletMap", {
     zoomControl: true,
     scrollWheelZoom: true
-  }).setView([-6.9175, 107.6191], 11);
+  }).setView([-6.9175, 107.6191], 12);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+    maxZoom: 18,
+    attribution: "&copy; OpenStreetMap"
   }).addTo(adminState.adminMap);
 
   document.getElementById("filterAdminMapStatus")?.addEventListener("change", renderAdminMapMarkers);
+  document.getElementById("filterAdminMapCategory")?.addEventListener("change", renderAdminMapMarkers);
   document.getElementById("btnAdminMapResetBounds")?.addEventListener("click", () => {
     fitAdminMapBounds();
     showToast("Peta berhasil dipusatkan pada seluruh titik laporan.");
@@ -565,17 +575,16 @@ function initAdminMap() {
 
 function fitAdminMapBounds() {
   if (!adminState.adminMap) return;
-  const mapEl = document.getElementById("adminLeafletMap");
-  if (!mapEl || mapEl.offsetWidth === 0 || mapEl.offsetHeight === 0) return;
-
   const validLatLngs = [];
   adminState.reports.forEach(r => {
     if (r.lat && r.lng) validLatLngs.push([Number(r.lat), Number(r.lng)]);
   });
+  adminState.adminMap.invalidateSize(true);
   if (validLatLngs.length > 0) {
-    adminState.adminMap.invalidateSize(true);
     const bounds = L.latLngBounds(validLatLngs);
     adminState.adminMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+  } else {
+    adminState.adminMap.setView([-6.9175, 107.6191], 12);
   }
 }
 
@@ -586,10 +595,13 @@ function renderAdminMapMarkers() {
   adminState.adminMapMarkers = [];
 
   const filterStatus = document.getElementById("filterAdminMapStatus")?.value || "ALL";
+  const filterCat = document.getElementById("filterAdminMapCategory")?.value || "ALL";
 
   const list = adminState.reports.filter(r => {
     if (!r.lat || !r.lng) return false;
-    return filterStatus === "ALL" || r.status === filterStatus;
+    const matchStatus = filterStatus === "ALL" || r.status === filterStatus;
+    const matchCat = filterCat === "ALL" || r.category === filterCat;
+    return matchStatus && matchCat;
   });
 
   const usedCoords = {};
@@ -599,7 +611,7 @@ function renderAdminMapMarkers() {
     let lat = Number(r.lat);
     let lng = Number(r.lng);
 
-    // Jitter if points overlap
+    // Jitter jika koordinat sama persis
     const coordKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
     if (usedCoords[coordKey]) {
       const step = usedCoords[coordKey];
@@ -614,16 +626,16 @@ function renderAdminMapMarkers() {
 
     latLngs.push([lat, lng]);
 
-    let markerColor = "#f59e0b"; // Menunggu
-    if (r.status === "Diproses") markerColor = "#0284c7";
-    if (r.status === "Selesai") markerColor = "#059669";
-    if (r.status === "Ditolak") markerColor = "#dc2626";
+    let pinColor = "#f59e0b"; // Menunggu
+    if (r.status === "Diproses") pinColor = "#0284c7";
+    if (r.status === "Selesai") pinColor = "#059669";
+    if (r.status === "Ditolak") pinColor = "#e11d48";
 
     const customIcon = L.divIcon({
-      className: "custom-map-pin",
-      html: `<div style="background:${markerColor}; width:18px; height:18px; border-radius:50%; border:3px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.45);"></div>`,
-      iconSize: [18, 18],
-      iconAnchor: [9, 9]
+      className: "lapor-pin",
+      html: `<div style="background-color:${pinColor}; width:20px; height:20px; border-radius:50%; border:2.5px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.45);"></div>`,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
     });
 
     const isAnon = r.isAnonymous || r.reporterName === "Anonim";
@@ -631,13 +643,13 @@ function renderAdminMapMarkers() {
 
     const marker = L.marker([lat, lng], { icon: customIcon }).addTo(adminState.adminMap);
     marker.bindPopup(`
-      <div style="font-family:'Inter',sans-serif; max-width:240px; padding:4px;">
-        <span style="font-size:10px; font-weight:800; color:#c1121f;">${escapeHtml(r.id)}</span>
-        <h4 style="font-size:13px; font-weight:800; margin:2px 0;">${escapeHtml(r.title)}</h4>
-        <p style="font-size:11px; color:#1e293b; margin:2px 0;">Pelapor: <strong>${authorName}</strong> ${isAnon ? '<span style="font-size:9px; background:#f1f5f9; padding:1px 4px; border-radius:3px;">Anonim</span>' : ''}</p>
-        <p style="font-size:11px; color:#475569; margin:2px 0;">Wilayah: ${escapeHtml(r.district || "-")} (${escapeHtml(r.address || "")})</p>
-        <div style="margin:4px 0;"><span class="status-tag ${getStatusClass(r.status)}" style="font-size:10px; padding:2px 6px;">${escapeHtml(r.status)}</span></div>
-        <button type="button" class="btn-outline-red btn-sm" style="width:100%; margin-top:4px;" onclick="openActionModal('${r.id}')">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif; min-width:220px; padding:3px;">
+        <span style="font-size:10px; font-weight:800; color:#c1121f;">${escapeHtml(r.type || "PENGADUAN")} - ${escapeHtml(r.id)}</span>
+        <h4 style="font-size:13px; font-weight:800; margin:3px 0 4px;">${escapeHtml(r.title)}</h4>
+        <p style="font-size:11px; color:#475569; margin-bottom:4px;">Pelapor: <strong>${authorName}</strong> ${isAnon ? '<span style="font-size:9px; background:#f1f5f9; padding:1px 4px; border-radius:3px;">Anonim</span>' : ''}</p>
+        <p style="font-size:11px; color:#64748b; margin-bottom:6px;">Lokasi: ${escapeHtml(r.address)} (${escapeHtml(r.district || "-")})</p>
+        <div style="font-size:11px; margin-bottom:8px;">Status: <span class="status-tag ${getStatusClass(r.status)}" style="padding:2px 6px; font-size:10px;">${escapeHtml(r.status)}</span></div>
+        <button type="button" class="btn-outline-red btn-sm" style="width:100%; margin-top:4px; font-weight:700;" onclick="openActionModal('${r.id}')">
           Tindak Lanjut &rarr;
         </button>
       </div>
@@ -646,8 +658,8 @@ function renderAdminMapMarkers() {
     adminState.adminMapMarkers.push(marker);
   });
 
-  const mapEl = document.getElementById("adminLeafletMap");
-  if (latLngs.length > 0 && mapEl && mapEl.offsetWidth > 0 && mapEl.offsetHeight > 0) {
+  const mapContainer = adminState.adminMap.getContainer();
+  if (latLngs.length > 0 && mapContainer && mapContainer.offsetWidth > 0 && mapContainer.offsetHeight > 0) {
     adminState.adminMap.invalidateSize(true);
     const bounds = L.latLngBounds(latLngs);
     adminState.adminMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });

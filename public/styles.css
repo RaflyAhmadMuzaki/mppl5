@@ -2901,3 +2901,9 @@ body {
   color: #14532d;
   line-height: 1.45;
 }
+
+/* Custom Marker Pins Leaflet */
+.lapor-pin {
+  background: transparent !important;
+  border: none !important;
+}

@@ -14,9 +14,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
-  <!-- Leaflet CSS for Geospatial Mapping -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <!-- Leaflet CSS & JS for Geospatial Mapping -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- Application Stylesheet -->
   <link rel="stylesheet" href="styles.css">
@@ -57,7 +57,7 @@
       <!-- Menu Navigasi Desktop -->
       <nav class="nav-menu" id="mainNavMenu" aria-label="Menu Utama">
         <button type="button" class="nav-link active" data-tab="tabBeranda">BERANDA</button>
-        <button type="button" class="nav-link" id="navLinkLaporanTerkini" onclick="window.goToPublicFeed()">LAPORAN TERKINI</button>
+        <button type="button" class="nav-link" id="navLinkLaporanTerkini" data-tab="tabLaporanTerkini">LAPORAN TERKINI</button>
         <button type="button" class="nav-link" data-tab="tabPeta">PETA SEBARAN</button>
         <button type="button" class="nav-link" data-tab="tabStatistik">STATISTIK</button>
         <button type="button" class="nav-link" data-tab="tabTentang">TENTANG SIMPEL</button>
@@ -118,7 +118,7 @@
         <span>Beranda</span>
       </button>
 
-      <button type="button" class="citizen-side-btn" id="drawerLinkLaporanTerkini" onclick="window.goToPublicFeed()">
+      <button type="button" class="citizen-side-btn" id="drawerLinkLaporanTerkini" data-tab="tabLaporanTerkini">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
           <polyline points="14 2 14 8 20 8"></polyline>
@@ -523,11 +523,38 @@
           <!-- Diisi secara dinamis -->
         </div>
       </section>
-
     </div>
 
     <!-- ============================================================== -->
-    <!-- TAB 2: PETA SEBARAN (GEOSPATIAL LEAFLET SESUAI SLIDE 4 & 6 PDF) -->
+    <!-- TAB 2: LAPORAN MASUK TERKINI (DEDIKASI PENUH PUBLIK)           -->
+    <!-- ============================================================== -->
+    <div id="tabLaporanTerkini" class="tab-page hidden">
+      <section class="page-container">
+        <div class="page-header-strip">
+          <div>
+            <h2 class="page-main-title">Laporan Masuk Terkini</h2>
+            <p class="page-main-desc">Seluruh laporan, aspirasi, dan aduan lingkungan masyarakat yang dihimpun secara real-time dan transparan.</p>
+          </div>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <select id="filterFeedCategoryTab" class="field-select select-sm" aria-label="Saring kategori laporan">
+              <option value="ALL">Semua Kategori</option>
+              <option value="Sampah">Sampah</option>
+              <option value="Polusi Air">Limbah Air</option>
+              <option value="Polusi Udara">Polusi Udara</option>
+              <option value="Ruang Terbuka">Ruang Terbuka</option>
+              <option value="Drainase">Drainase</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="feedRecentReportsTab" class="feed-grid">
+          <!-- Diisi secara dinamis oleh JavaScript -->
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- TAB 3: PETA SEBARAN (GEOSPATIAL LEAFLET SESUAI SLIDE 4 & 6 PDF) -->
     <!-- ============================================================== -->
     <div id="tabPeta" class="tab-page hidden">
       <section class="page-container">
@@ -656,16 +683,10 @@
 
           <div class="tentang-vision-mission-grid">
             <div class="vm-card">
-              <div class="vm-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-              </div>
               <h4>Visi SIMPEL</h4>
               <p>Mewujudkan tata kelola lingkungan perkotaan yang bersih, sehat, berkelanjutan, dan tanggap krisis berbasis partisipasi inklusif seluruh lapisan masyarakat.</p>
             </div>
             <div class="vm-card">
-              <div class="vm-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              </div>
               <h4>Misi SIMPEL</h4>
               <p>Menyediakan sarana aduan yang cepat dan akurat, mempercepat respon tim lapangan lintas instansi, serta menyajikan data analitik lingkungan yang transparan untuk kebijakan publik.</p>
             </div>
@@ -789,11 +810,11 @@
 
   <!-- MODAL DETAIL LAPORAN MASUK TERKINI & PETA -->
   <div id="modalReportDetail" class="lapor-modal-backdrop hidden" role="dialog" aria-modal="true"
-    aria-labelledby="modalDetailTitle">
+    aria-labelledby="modalDetailTitle" onclick="if(event.target===this)window.closeReportDetailModal()">
     <div class="lapor-modal-dialog modal-dialog-md">
       <div class="modal-top">
         <h3 id="modalDetailTitle" class="modal-title-text">Detail Laporan Lingkungan</h3>
-        <button type="button" class="modal-close-icon" id="btnCloseReportDetail" aria-label="Tutup dialog">&times;</button>
+        <button type="button" class="modal-close-icon" id="btnCloseReportDetail" onclick="window.closeReportDetailModal()" aria-label="Tutup dialog">&times;</button>
       </div>
       <div class="modal-content-area" id="modalReportDetailBody">
         <!-- Konten detail diisi dinamis oleh JavaScript -->
@@ -1005,8 +1026,7 @@
   </footer>
 
   <!-- Leaflet Library -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <!-- jsPDF & AutoTable for PDF Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
